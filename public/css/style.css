@@ -1,0 +1,339 @@
+.p-popshop{
+	background: #4a4a4a;
+  	width: 41px;
+  	text-align: center;
+  	color: #FFF;
+}
+
+.login-container {
+    width: 949px;
+    margin: 0 auto;    
+    word-wrap:break-word;
+}
+
+.new, .read{
+	display: none;
+}
+
+
+.container {
+    width: 90%;
+    margin: 0 auto;    
+    word-wrap:break-word;
+}
+
+.merchant-select{
+	display: none;;
+}
+
+.origin-loker, .dest-loker{
+	display: none;
+}
+
+.box-login{
+	padding: 0 31%;
+	text-align: center;
+	margin-top: 11%;
+}	
+
+.logo-login{
+	width: 61%;
+	margin: 3%;
+}
+
+.logo{
+	width: 90%;
+}
+.alileft{
+	text-align: left;
+}
+
+
+.label-email{
+	font-weight: bold;
+}
+
+.label-email.active{
+	margin-left: 1px;
+	background: #1ab394;
+  	text-align: center;
+  	padding: 4px;
+  	margin-left:5%;
+}
+
+.label-email.active a{
+	color: #FFF;
+}
+
+.link-sign-in{
+	margin-left: 1px;
+	background: #e6e6e6;
+  	text-align: center;
+  	padding: 4px;
+}
+
+.link-sign-in a{
+	color:#acc5d9;
+}
+
+.link-forgot-in{
+	 background: #1ab394;
+	 color: #FFF;
+	 padding: 4px 2px;
+	 font-size: 14px;
+}
+
+.sub-box-login{
+	padding: 5% 6%;
+  	border: 1px solid #dddddd;
+}
+
+.top-row-login{
+	margin-top: 7%;
+}
+.btn.masuk{
+	width: 100%;  	
+	background: #23c6c8;
+  	color: #FFF;
+  	border:0px;
+}
+
+.left{
+	float: left;
+}
+
+.col-top-logo{
+	padding: 0 0;
+}
+.col-top-menu{
+	padding:3% 0;
+	text-align: center;		
+}
+
+.col-top-menu1{
+	padding:3% 0;
+	text-align: center;
+}
+
+.col-top-menu-user{
+	padding: 5% 10px;
+  	text-align: right;
+}
+
+#dropdownMenu1{
+	background: #FFF;	
+	cursor: pointer !important;
+}
+
+.col-top-menu1 .dropdown.open{
+	cursor: pointer;
+}
+
+.col-top-menu-user .dropdown.open{
+	width: 50%;
+  	float: right;
+  	height: 27px;
+}
+
+#dropdownMenu1:hover{
+	color:#000;
+}
+
+.col-top-menu-user img{
+	width: 45px;
+	margin-top: -10px;
+}
+
+.icon-filter{
+  	padding: 22px 15px;
+  	background: #FFF;
+  	border: 1px solid #cccccc;
+  	border-left: 0px;
+}
+
+.col-top-menu.active{
+	background: #2f4050;
+	color: #FFF;
+}
+
+.input-group input{
+	/*padding: 29px 0px;*/
+	height: 60px;
+  	font-size: 23px;
+}
+
+.btn-add-invoice{
+	width: 95%;
+	cursor: pointer;
+}
+
+.record{
+	padding: 2px 14px;
+}
+
+.download{
+	text-align: right;	
+}
+
+.row-input{
+  	font-size: 17px;
+  	margin: 20px 0px;
+}
+
+table .out{
+	background: blue;
+  	color: white;
+  	text-align: center;
+  	width: 100%;
+}
+
+.undel{
+	background: red;
+  	color: white;
+  	text-align: center;
+  	width: 100%;
+}
+
+.close-alert{
+	float: right;
+  	margin-top: -11px;
+  	cursor: pointer;
+}
+
+table .in{
+	background: green;
+  	color: white;
+  	text-align: center;
+  	width: 100%;
+}
+
+.row-input.courir{
+	font-size: 21px;
+  	margin: 6px 0px;
+}
+
+.box-input{
+	padding: 20px;
+  	border: 1px solid #bebebe;
+  	border-radius: 10px;
+  	margin-top: 4%;
+}
+
+.box-input.list-record{
+	padding: 0px;
+}
+
+.btn-save, .btn-print, .btn-print-read{
+	  padding: 5px;
+	  background: #4a4a4a;
+	  color: #FFF;
+	  width: 42%;
+	  text-align: center;
+	  cursor: pointer;
+	  margin: 0 10px;
+	  font-size:13px;
+}
+
+
+.status-barang{
+	color: #FFF;
+	font-size: 20px;
+	background: #2f4050;
+	text-align: center;
+	padding: 16px;
+}
+
+.border-input.active{
+	border : 12px solid green;
+}
+
+.page{
+	color: red;
+	  font-weight: bold;
+	  padding: 23px;
+	  float: right;
+	  font-size: 12px;"
+}
+
+.volume{
+	border: 1px solid #ccc;
+  	padding: 20px
+;  	border-bottom: 0px
+}
+
+.notif-oneday{
+	background: red;
+	color: #FFF;
+}
+
+.notif-oneday a{
+	color: #FFF;
+}
+
+.id-detail{
+	font-weight: bold;
+  	color: goldenrod;
+}
+
+.edit, .delete, .print{
+	cursor: pointer;
+}
+
+#from-edit .row{
+	padding: 10px;	
+}
+
+#from-edit .col-md-3, #from-edit input{
+	font-size: 14px !important;
+}
+
+ul.ui-autocomplete {
+    z-index: 1100;
+}
+
+.btn-rwb, .multi-btn-rwb{
+	height: 26px;
+  	padding: 4px;
+  	width: 100px;
+}
+
+.multi-btn-rwb{
+	margin-top: 4px;
+}
+
+.sum-inbound{
+  background: #67c2ef;
+  text-align: center;
+  color: #FFF;
+  padding: 20px;
+  font-size: 20px;
+}
+
+
+
+
+
+.line{
+	border-top: 1px solid #CCC;
+}
+
+input.error{
+	border-color: red;
+}
+label.error{
+	color: red;
+}
+
+.table-transaction{
+	font-size: 13px;
+}
+
+.jam{
+	width: 50px;
+	display: inline;
+}
+
+.deliver, .problem, .agent-user{
+	display: none;
+}
+
