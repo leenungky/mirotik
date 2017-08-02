@@ -158,6 +158,7 @@ return [
         App\Providers\EventServiceProvider::class,
         App\Providers\RouteServiceProvider::class,        
         Barryvdh\DomPDF\ServiceProvider::class,
+        Collective\Remote\RemoteServiceProvider::class,
     ],
 
     /*
@@ -207,7 +208,7 @@ return [
         'DNS2D' => Milon\Barcode\Facades\DNS2DFacade::class,
         'SiteHelpers'   => 'App\Lib\SiteHelpers',
         'PDF' => Barryvdh\DomPDF\Facade::class,
-        
+        'SSH' => Collective\Remote\RemoteFacade::class,
 
     ],
 

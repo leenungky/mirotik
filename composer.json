@@ -9,7 +9,9 @@
         "laravel/framework": "5.2.*",
         "milon/barcode": "^5.2",
         "phpoffice/phpexcel": "dev-master",        
-        "barryvdh/laravel-dompdf" : "0.8"
+        "barryvdh/laravel-dompdf" : "0.8",
+        "laravelcollective/remote": "^5.2.0",
+        "nunenuh/mikrotik-api": "dev-master"
     },
     "require-dev": {
         "fzaninotto/faker": "~1.4",
