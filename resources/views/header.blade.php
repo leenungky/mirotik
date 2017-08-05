@@ -19,12 +19,12 @@
                     <div class="col-md-2 col-top-menu1">
                         <div class="dropdown">
                             <a class="dropdown-toggle" type="button" id="dropdownMenu1" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true">
-                                    Transaction
+                                    Customer
                                     <span class="caret"></span>
                             </a>
                             <ul class="dropdown-menu" aria-labelledby="dropdownMenu1">
                                 <li>
-                                     <a href="/transaction">Create Transaction</a>
+                                     <a href="/customer/list">Customer</a>
                                 </li>                                                                  
                                 @if ($req->session()->get("role")!="staff")
                                     <li role="separator" class="divider"></li>

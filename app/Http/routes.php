@@ -17,6 +17,7 @@ Route::get('/', [
 ]);
 
 
-
-Route::controller('/user', 'UserController');
-Route::controller('/mikrotik', 'MikrotikController');
+Route::group(['middleware' => 'logic'], function(){
+	Route::controller('/user', 'UserController');
+	Route::controller('/customer', 'CustomerController');
+});

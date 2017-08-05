@@ -227,11 +227,8 @@ class UserController extends Controller {
 						if($request->ajax() == true ){							
 							return response()->json(['status' => 'success', 'url' => url('')]);
 						} else {							
-							if ($role->name == "staff"){
-								return Redirect::to('transaction');
-							}else{
-								return Redirect::to('customer');
-							}
+							return Redirect::to('customer/list');
+							
 						}					
 					}		
 					

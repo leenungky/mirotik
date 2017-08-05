@@ -38,7 +38,7 @@
 
                         <div class="row">
                             <div class="col-md-12">
-                                <img src="{{URL::asset('img/logo-bks.png')}}" class="logo-login">
+                                <!-- <img src="{{URL::asset('img/logo-bks.png')}}" class="logo-login"> -->
                             </div>
                         </div>
                        <div class="row">                              
