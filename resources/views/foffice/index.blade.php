@@ -64,7 +64,11 @@
 					    						<span class="glyphicon glyphicon-remove"></span>
 					    					</span> 
 				    					</a>
+				    					| 			    					
 			    					@endif
+			    					<a href="javascript:void(0)" class="print" val="{{$value[".id"]}}">
+			    						 <span class="glyphicon glyphicon-print"></span> 
+			    					</a>
 								</td>
 							</tr>																							
 						@endforeach
