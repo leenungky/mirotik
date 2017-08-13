@@ -13,7 +13,7 @@
 // */
 
 Route::get('/', [
-    'as' => 'index', 'uses' => 'UserController@getLogin'
+   'as' => 'index', 'uses' => 'UserController@getLogin'   
 ]);
 
 

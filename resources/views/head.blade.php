@@ -22,8 +22,7 @@
 	<!-- <script src="https://code.jquery.com/jquery-1.12.4.js"></script> -->
 	
 	<!--<link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/morris.js/0.5.1/morris.css">-->
-	<link rel="stylesheet" href="{{ URL::asset('css/morris.css') }}" />	
-
+	
 	<script type="text/javascript" src="{{ URL::asset('js/jquery.min.js') }}"></script>
 	<script type="text/javascript" src="{{ URL::asset('js/bootstrap.min.js') }}"></script>	
 	

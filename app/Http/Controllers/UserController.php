@@ -20,16 +20,12 @@ class UserController extends Controller {
 	public function __construct(Request $req) {
 		$this->data["type"]= "User"; 
 		$this->data["req"]= $req; 
+		$this->data["role"] =  $req->session()->get("role", ""); 
 	} 
 
 	public function getAdd(){
 		$req = $this->data["req"];
-		$role = DB::table("tb_role")->get();
-		$agent = DB::table("agent")
-		->select("agent.id","agent.name", "tb_cities.name as kota")
-		->join("tb_cities","tb_cities.id","=", "agent.city_id", "left")
-		->get();
-		$this->data["agent"] = $agent;				
+		$role = DB::table("tb_role")->get();						
 		$this->data["role"] = $role;
 		return view('user.new', $this->data);  
 	}
@@ -45,9 +41,7 @@ class UserController extends Controller {
 	public function getEdit($id){		
 		$req = $this->data["req"];
 		$user = DB::table("tb_users")->where("id" , $id)->first();	
-		$agent = DB::table("agent")->get();					
-		$role = DB::table("tb_role")->get();		
-		$this->data["agent"] = $agent;
+		$role = DB::table("tb_role")->get();										
 		$this->data["role"] = $role;
 		$this->data["user"] = $user;
 		$this->data["req"] = $req;
@@ -67,9 +61,7 @@ class UserController extends Controller {
 			'lastname'=>'required|alpha_num|min:2',			
 			'role' => 'required'			
 			);	
-		if ($req->input("role")=="3"){
-			$rules["agent"] = "required";
-		}
+		
 		
 		if (!empty($req->input("password"))){
 			$rules["password"] = 'required|between:6,12|confirmed';	
@@ -83,9 +75,11 @@ class UserController extends Controller {
         }
 
         $input = $req->input();        			
-		$arrUpdate = array("first_name" => $input["firstname"],
+		$arrUpdate = array(
+			"first_name" => $input["firstname"],
 			"last_name" => $input["lastname"],
-			"agent_id" => $input["agent"]);        
+			"role_id" => $input["role"]
+			);        
 		if (!empty($input["password"])){
 			$arrUpdate["password"] = \Hash::make($input["password"]);
 		}		
@@ -125,17 +119,11 @@ class UserController extends Controller {
 
         if ($validator->fails()) {            
             return Redirect::to(URL::previous())->withInput(Input::all())->withErrors($validator);            
-        }
-  //       echo "<pre>";
-		// print_r($request->input());
-		// die();
+        }        
 		$authen = new User;
 		$authen->first_name = $request->input('firstname');
 		$authen->last_name = $request->input('lastname');
 		$authen->role_id = $request->input('role');
-		if ($authen->role_id == 3){
-			$authen->agent_id = $request->input('agent');
-		}
 		$authen->email = trim($request->input('email'));			
 		$authen->password = \Hash::make($request->input('password'));
 		$authen->save();
@@ -508,10 +496,8 @@ class UserController extends Controller {
 	//================= batas
 	private function _get_index_filter($filter){
         $dbuser = DB::table("tb_users")
-        ->select("tb_users.id", "tb_users.first_name", "tb_users.last_name", "tb_users.email", "tb_role.name as role", "agent.name as agent_name", "tb_cities.name as city_name")
-        ->join("tb_role", "tb_role.id", "=", "tb_users.role_id", "left")
-        ->join("agent", "agent.id", "=", "tb_users.agent_id", "left")
-        ->join("tb_cities", "tb_cities.id", "=", "agent.city_id", "left");
+        ->select("tb_users.id", "tb_users.first_name", "tb_users.last_name", "tb_users.email", "tb_role.name as role")
+        ->join("tb_role", "tb_role.id", "=", "tb_users.role_id", "left");        
         if (isset($filter["email"])){
             $dbuser = $dbuser->where("email", "like", "%".$filter["email"]."%");
         }        

@@ -19,7 +19,9 @@ class BusinessLogic
         $controllerAction = class_basename($routeArray["controller"]);
         list($controller, $action) = explode("@", $controllerAction);        
         $strRedirect =  $this->getRedirect($controller, $action, $request);
+        echo $strRedirect."<br/>";
         if ($strRedirect==""){
+
             return $next($request);
         }else{
             return redirect($strRedirect);
@@ -29,19 +31,27 @@ class BusinessLogic
 
     public function getRedirect($controller, $action, $request){
         $role =  $request->session()->get("role", ""); 
-        $strRedirect = "";        
-        if ($role=="staff"){
+        $strRedirect = "";                
+        if ($role=="FO"){
             if ($controller == "UserController"){
                 if ($action == "getLogout" || $action=="getLogin" || $action=="postLogin"){                    
                 }else{
-                    $strRedirect = "/mikrotik/list";    
+                    $strRedirect = "/customer/list";    
                 }                
             } else{
-                $strRedirect = "/mikrotik/list";    
-            } 
+                $strRedirect = "/customer/list";    
+            }             
             
-            
-        }        
+        }   
+        if (empty($role)){   
+            if ($controller == "UserController"){
+                if ($action == "getLogout" || $action=="getLogin" || $action=="postLogin"){  
+                    $is_cek_payment = false;
+                }
+            }else{                 
+                $strRedirect = "/user/logout";                                     
+            }
+        }
         return $strRedirect;
 
     }

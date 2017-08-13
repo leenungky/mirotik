@@ -57,20 +57,7 @@
 								@endif								
 							@endforeach
 						</select>
-					</div>		
-					<div class="form-group agent-user">
-					    <label for="email">agent</label>
-						<select name="agent" id="agent" class="form-control">
-							<option>Pilih Agent</option>
-							@foreach ($agent as $key => $value)
-								@if ($value->id==$user->agent_id)
-									<option value="{{$value->id}}" selected>{{$value->name}}</option>
-								@else
-									<option value="{{$value->id}}">{{$value->name}}</option>
-								@endif								
-							@endforeach
-						</select>
-					</div>			
+					</div>							
 					<div class="form-group">
 					    <label for="pwd">Password:</label>
 					    <input type="password" class="form-control" name="password" placeholder="input password" value="{{ old('password') }}">

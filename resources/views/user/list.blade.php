@@ -32,7 +32,7 @@
 			<form action="/user/list" method="get">				
 				<div class="col-md-4">
 					Email<br/>
-					<input type="text" name="email" class="form-control" value="{{isset($filter["email"]) ? $filter["email"] : ""}}">
+					<input type="text" name="email" class="form-control" value="{{isset($input["email"]) ? $input["email"] : ""}}">
 				</div>				
 				<div class="col-md-8">
 					<br/>
