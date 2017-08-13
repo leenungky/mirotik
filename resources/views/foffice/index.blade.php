@@ -17,12 +17,14 @@
     <div class="container container-fluid">            	
 		@include('header')		
 		<br/>		
-		<div class="row">	
-			<div class="col-md-12">
-			<a href="/customer/add">Create</a>
+		@if ($role=="administrator")
+			<div class="row">	
+				<div class="col-md-12">
+				<a href="/customer/add">Create</a>
+				</div>
 			</div>
-		</div>
-		<br/>
+			<br/>
+		@endif
 		 @if(Session::has('message'))
             <div class="row">
                 <div class="col-md-12 alert alert-warning">      
@@ -44,25 +46,29 @@
 						<th>Action</th>
 					</thead>
 					<tbody>
+						@if (isset($usermkr))
 						@foreach ($usermkr as $key => $value)
 							<tr>
 								<td>{{($key+1)}}</td>
 								<td>{{$value["username"]}}</td>								
 								<td>{{$value["password"]}}</td>								
 								<td>
-									<a href="/customer/edit/{{$value[".id"]}}">
-										<span class="edit"> 
-					    					<span class="glyphicon glyphicon-pencil"></span>
-					    				</span>
-				    				</a> | 
-				    				<a href="/customer/delete/{{$value[".id"]}}" class="confirmation">
-					    				<span class="delete">
-				    						<span class="glyphicon glyphicon-remove"></span>
-				    					</span> 
-			    					</a>
+									@if ($role=="administrator")
+										<a href="/customer/edit/{{$value[".id"]}}">
+											<span class="edit"> 
+						    					<span class="glyphicon glyphicon-pencil"></span>
+						    				</span>
+					    				</a> | 
+					    				<a href="/customer/delete/{{$value[".id"]}}" class="confirmation">
+						    				<span class="delete">
+					    						<span class="glyphicon glyphicon-remove"></span>
+					    					</span> 
+				    					</a>
+			    					@endif
 								</td>
 							</tr>																							
 						@endforeach
+						@endif
 					</tbody>
 				</table>
 			</div>

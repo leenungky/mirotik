@@ -19,22 +19,32 @@ class CustomerController extends Controller {
 	protected $layout = "layouts.main";
 	private $output;
 	private $connect;
+	private $role;
 	public function __construct(Request $req) {
-		$this->data["type"]= "Role";      
+		$this->data["type"]= "User_Mikrotik";      
 		$this->data["req"] = $req;
+		$this->data["role"] = strtolower($req->session()->get("role", ""));
 		$this->api = new RouterosApi();
 		$this->api->debug = false;
 		$this->api->port = 8729;
 		$this->api->ssl = true;
 		$this->api->timeout = 30;
 		$this->connect = array("host" => "180.250.113.42", "user" => "nungky", "password" => "123");
+		// $this->connect = array("host" => "202.169.46.205", "user" => "nungky", "password" => "cabin888");
+		
 	} 
 	
 	public function getAdd(){			
+		if ($this->data["role"]!="administrator"){
+			return redirect('/customer/list');
+		}			
 		return view('foffice.new', $this->data);
 	}
 
-	public function getEdit($id){					
+	public function getEdit($id){				
+		if ($this->data["role"]!="administrator"){
+			return redirect('/customer/list');
+		}
 		if ($this->api->connect($this->connect["host"], 
 				$this->connect["user"], 
 				$this->connect["password"])) {
@@ -47,6 +57,9 @@ class CustomerController extends Controller {
 	}
 
 	public function postCreate(){
+		if ($this->data["role"]!="administrator"){
+			return redirect('/customer/list');
+		}
 		$req = $this->data["req"];
         $validator = Validator::make($req->all(), [            
             'username' => 'required',       
@@ -76,6 +89,9 @@ class CustomerController extends Controller {
 	}
 
 	public function postUpdate($id){		
+		if ($this->data["role"]!="administrator"){
+			return redirect('/customer/list');
+		}
 		$req = $this->data["req"];
         $validator = Validator::make($req->all(), [            
             'username' => 'required',       
@@ -100,6 +116,9 @@ class CustomerController extends Controller {
 	}
 
 	public function getDelete($id){
+		if ($this->data["role"]!="administrator"){
+			return redirect('/customer/list');
+		}
 		if ($this->api->connect($this->connect["host"], 
 				$this->connect["user"], 
 				$this->connect["password"])) {

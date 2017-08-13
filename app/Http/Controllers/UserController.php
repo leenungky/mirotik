@@ -24,12 +24,18 @@ class UserController extends Controller {
 	} 
 
 	public function getAdd(){
+		if ($this->data["role"]!="administrator"){
+			return redirect('/customer/list');
+		}	
 		$req = $this->data["req"];
 		$role = DB::table("tb_role")->get();						
 		$this->data["role"] = $role;
 		return view('user.new', $this->data);  
 	}
 	public function getList(){
+		if ($this->data["role"]!="administrator"){
+			return redirect('/customer/list');
+		}
 		$req = $this->data["req"];
 		$input= $req->input();         		
 		$dbuser = $this->_get_index_filter($input);     
@@ -39,6 +45,9 @@ class UserController extends Controller {
 	}
 
 	public function getEdit($id){		
+		if ($this->data["role"]!="administrator"){
+			return redirect('/customer/list');
+		}
 		$req = $this->data["req"];
 		$user = DB::table("tb_users")->where("id" , $id)->first();	
 		$role = DB::table("tb_role")->get();										
@@ -49,6 +58,9 @@ class UserController extends Controller {
 	}
 
 	public function getDelete($id){		
+		if ($this->data["role"]!="administrator"){
+			return redirect('/customer/list');
+		}
 		$req = $this->data["req"];
 		$user = DB::table("tb_users")->where("id" , $id)->delete();
 		return redirect('/user/list')->with('message', "Successfull delete");
