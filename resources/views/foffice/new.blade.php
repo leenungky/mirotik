@@ -46,7 +46,7 @@
 					<input type="hidden" name="_token" value="{{ csrf_token() }}">					
 					<div class="form-group">
 					    <label for="email">Username</label>
-						 <input type="text" class="form-control" id="name" name="name" placeholder="input name" value="{{ old('username') }}" required>
+						 <input type="text" class="form-control" id="name" name="name" placeholder="input name" value="{{ old('name') }}" required>
 					</div>		
 					<div class="form-group">
 					    <label for="email">Password</label>
@@ -56,7 +56,12 @@
 					    <label for="email">Profile</label>
 						 <select name="profile" class="form-control">
 						 	@foreach ($profiles as $key => $value)
-						 		<option>{{$value["name"]}}</option>
+						 		@if ($value["name"]==old("profile"))
+						 			<option selected>{{$value["name"]}}</option>
+						 		@else
+						 			<option>{{$value["name"]}}</option>
+						 		@endif
+						 		
 						 	@endforeach
 						 </select>
 					</div>	
@@ -90,7 +95,9 @@
 
 <script type="text/javascript">
 	$(document).ready(function(){			
-
+		@if (old("profile")=="room_profile")
+			$(".cls_room").show();
+		@endif
 		$("select[name='profile']").change(function(){
 			if ($(this).val()=="room_profile"){
 				$("input[name='from']").prop("required", true);

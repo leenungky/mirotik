@@ -24,7 +24,7 @@ class CustomerController extends Controller {
 	private $api;
 	private $path = "";
 	public function __construct(Request $req) {
-		$this->data["type"]= "User_Mikrotik";      
+		$this->data["type"]= "user_hotspot";      
 		$this->data["req"] = $req;
 		$this->data["role"] = strtolower($req->session()->get("role", ""));				
 		$this->api = new RouterosApi();
@@ -142,11 +142,17 @@ class CustomerController extends Controller {
         	$arrValidate["to"] = "required";
         	$arrValidate["day"] = "required";
         }
-         $validator = Validator::make($req->all(), $arrValidate);
+        $validator = Validator::make($req->all(), $arrValidate);
 
         if ($validator->fails()) {            
             return Redirect::to(URL::previous())->withInput(Input::all())->withErrors($validator);            
         }	
+
+        if ($input["profile"]=="room_profile"){
+        	if (!$this->checkValidRoom($input)){
+        		return Redirect::to(URL::previous())->withInput(Input::all())->withErrors("Room Masih digunakan");            	
+        	}
+        }
         
         $message = "Successfull created";
 		if ($this->api->connect($this->connect["host"], 
@@ -204,6 +210,15 @@ class CustomerController extends Controller {
 			DB::table("mikrotik")->where("mikrotik_id", $id)->update($arrUpdate);
 		}
 		return redirect('/customer/list')->with('message', "Successfull delete");
+	}
+
+	public function checkValidRoom($input){
+		$data = DB::table("mikrotik")->where("room", $input["room"])->whereNull("deleted_at")->first();
+		if (isset($data)){
+			return false;
+		}else{
+			return true;
+		}
 	}
 
 		
