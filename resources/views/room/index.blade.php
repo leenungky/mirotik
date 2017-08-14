@@ -87,7 +87,7 @@
 				    						<span class="glyphicon glyphicon-remove"></span>
 				    					</span> 
 			    					</a> |
-			    					<a href="javascript:void(0)" class="print" val="{{$value->id}}">
+			    					<a href="javascript:void(0)" class="print" val="{{$value->id}}" val-name="{{$value->id}}" val-password="{{$value->id}}">
 			    						 <span class="glyphicon glyphicon-print"></span> 
 			    					</a>
 
@@ -100,7 +100,7 @@
 		</div>
 	 </div>	    	
 </div>
-<div class="row" id="printableArea">
+<!-- <div class="row" id="printableArea" style="display: none;">
 		<div class="left" style="width: 140px; font-size: 8px; margin-left: 10px">
 			<div><br/>
 				<div style="width: 100px;margin-left: 50px;margin-right: 50px;margin-bottom:20px; ">
@@ -140,17 +140,18 @@
     	</div>
 
     	<div style="clear: both;"></div><br/>    		
-   	</div>
+   	</div> -->
 
 </body>
 </html>
 
-<script type="text/javascript">	
+<!-- <script type="text/javascript">	
 	
    
 	$('.print').click(function(e) { // catch the form's submit event		
-		var order_no = $(this).attr("val");
-		var url = "/customer/print?name=aaaa&password=aaaaa"; // the script where you handle the form input.		
+		var name = $(this).attr("val-name");
+		var password = $(this).attr("val-password");
+		var url = "/customer/print?name="+ name +"&password=" + password; // the script where you handle the form input.		
 	    $.ajax({
 	           type: "GET",
 	           url: url,
@@ -159,7 +160,9 @@
 	           		if (result.response.code=="200"){
 	           			console.log(result);
 	           			$(".spancode").text("");
-	           			$("#qrcode").attr("src","data:image/png;base64," + result.qrcode);					           			
+	           			if (result.qrcode!=""){
+	           				$("#qrcode").attr("src","data:image/png;base64," + result.qrcode);					           			
+	           			}	           			
 	           			$(".val-name").text(result.data.name);
 	           			$(".val-password").text(result.data.password);
 						
@@ -172,4 +175,4 @@
 		return false;	    
 	});
 
-</script>
+</script> -->

@@ -3,17 +3,16 @@
 <html xmlns="http://www.w3.org/1999/xhtml"> 
 <head>
      @include('head')
-     <style type="text/css" media="print">
-     	   @media print {     	   		
+        <style type="text/css" media="print">
+     	   @media print {
 			    @page { margin: 0px 6px; }
-  				body  { margin: 0px 6px; }   					  
+  				body  { margin: 0px 6px; }   					    				
 			}
-
-		/*	@media print {
+			@media print {
 				.txt-attr {
-			 	  	color: orange !important;			    
-				}
-			}*/
+			    	color: orange !important;			    
+			}
+		}
      </style>
 </head>
 <body >
@@ -87,7 +86,7 @@
 		</div>
 	 </div>	    	
 </div>
-<div class="row" id="printableArea">
+<div class="row" id="printableArea" style="display: none">
 		<div class="left" style="width: 140px; font-size: 8px; margin-left: 10px">
 			<div><br/>
 				<div style="width: 100px;margin-left: 50px;margin-right: 50px;margin-bottom:20px; ">
@@ -132,33 +131,36 @@
 </html>
 
 <script type="text/javascript">	
-	
+	$(document).ready(function(){
+		$('.print').click(function(e) { // catch the form's submit event		
+			var name = $(this).attr("val-name");
+			var password = $(this).attr("val-password");
+			var url = "/customer/print?name="+ name +"&password=" + password; // the script where you handle the form input.		
+		    $.ajax({
+		           type: "GET",
+		           url: url,
+		           data: $(this).serialize(), // serializes the form's elements.
+		           success: function(result){
+		           		if (result.response.code=="200"){
+		           			console.log(result);
+		           			$(".spancode").text("");
+		           			if (result.qrcode!=""){
+		           				$("#qrcode").attr("src","data:image/png;base64," + result.qrcode);					           			
+		           			}	           			
+		           			$(".val-name").text(result.data.name);
+		           			$(".val-password").text(result.data.password);
+							
+		           			setTimeout(function(){
+							  printDivIcon('printableArea');
+							}, 1000);
+		           		}
+		           }
+		        });		
+			return false;	    
+		});
+
+	})
    
-	$('.print').click(function(e) { // catch the form's submit event		
-		var name = $(this).attr("val-name");
-		var password = $(this).attr("val-password");
-		var url = "/customer/print?name="+ name +"&password=" + password; // the script where you handle the form input.		
-	    $.ajax({
-	           type: "GET",
-	           url: url,
-	           data: $(this).serialize(), // serializes the form's elements.
-	           success: function(result){
-	           		if (result.response.code=="200"){
-	           			console.log(result);
-	           			$(".spancode").text("");
-	           			if (result.qrcode!=""){
-	           				$("#qrcode").attr("src","data:image/png;base64," + result.qrcode);					           			
-	           			}	           			
-	           			$(".val-name").text(result.data.name);
-	           			$(".val-password").text(result.data.password);
-						
-	           			setTimeout(function(){
-						  printDivIcon('printableArea');
-						}, 1000);
-	           		}
-	           }
-	        });		
-		return false;	    
-	});
+	
 
 </script>

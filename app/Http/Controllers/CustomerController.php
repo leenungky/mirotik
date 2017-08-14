@@ -87,7 +87,8 @@ class CustomerController extends Controller {
 			 	 ".id" => $id,
 			));			
 			$this->api->disconnect(); 
-			DB::table("mikrotik")->where("mikrotik_id", $id)->update(array("deleted_by" =>\Auth::user()->id));
+			$arrDeleted = array("deleted_by" =>\Auth::user()->id, "deleted_at" => date("Y-m-d h:i:s"));
+			DB::table("mikrotik")->where("mikrotik_id", $id)->update($arrDeleted);
 		}
 		return redirect('/customer/list')->with('message', "Successfull delete");
 	}
@@ -198,6 +199,7 @@ class CustomerController extends Controller {
 			$this->api->disconnect(); 		
 			$arrUpdate = $input;		
 			$arrUpdate["updated_by"] = \Auth::user()->id;
+			$arrUpdate["updated_at"] = date("Y-m-d h:i:s");
 			unset($arrUpdate["_token"]);  
 			DB::table("mikrotik")->where("mikrotik_id", $id)->update($arrUpdate);
 		}

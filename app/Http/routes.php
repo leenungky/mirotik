@@ -21,4 +21,6 @@ Route::get('/', [
 	Route::controller('/user', 'UserController');
 	Route::controller('/customer', 'CustomerController');
 	Route::controller('/room', 'RoomController');
+	Route::controller('/report', 'ReportController');
+	
 // });
