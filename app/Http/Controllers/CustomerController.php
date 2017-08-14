@@ -61,7 +61,17 @@ class CustomerController extends Controller {
 			 	 "?.id" => $id
 			)); 			
 			$this->data["profiles"] = $this->api->comm($this->path."/user/profile/print");						
-			$this->data["usermkr"] = $arr[0];			
+			$this->data["usermkr"] = $arr[0];						
+			// echo "<pre>";
+			// print_r($this->data["usermkr"]);
+			
+			if (isset($arr[0]["profile"])){
+				if ($arr[0]["profile"]=="room_profile"){
+					$this->data["roomdb"] = DB::table("mikrotik")->where("mikrotik_id", $arr[0][".id"])->first();					
+					// print_r($this->data["roomdb"]);
+				}
+			}
+			// die();
 		}		
 		return view('foffice.edit', $this->data);
 	}
@@ -78,18 +88,27 @@ class CustomerController extends Controller {
 		if ($this->data["role"]!="administrator"){
 			return redirect('/customer/list');
 		}
-		$req = $this->data["req"];
-        $validator = Validator::make($req->all(), [            
+		$req = $this->data["req"];        
+        $arrValidate = [            
             'name' => 'required',       
             'password' => 'required',
             'profile' => 'required',
-        ]);
+        ];
+
+        $input  = $req->input();
+        if ($input["profile"]=="room_profile"){
+        	$arrValidate["room"] = "required";
+        	$arrValidate["from"] = "required";
+        	$arrValidate["to"] = "required";
+        	$arrValidate["day"] = "required";
+        }
+         $validator = Validator::make($req->all(), $arrValidate);
 
         if ($validator->fails()) {            
             return Redirect::to(URL::previous())->withInput(Input::all())->withErrors($validator);            
         }	
-        $input  = $req->input();
-        $message = "Successfull update";
+        
+        $message = "Successfull created";
 		if ($this->api->connect($this->connect["host"], 
 				$this->connect["user"], 
 				$this->connect["password"])) {
@@ -97,11 +116,18 @@ class CustomerController extends Controller {
 				"name" => $input['name'],				
 				"password" => $input['password'],
 				"profile" => $input['profile']
-			));
-			$this->api->disconnect(); 					
+			));						
+			$this->api->disconnect(); 											
 			if (isset($response["!trap"][0]["message"])){
 				return redirect('/customer/add')->withInput(Input::all())->with('message', $response["!trap"][0]["message"]);
-			}			
+			}else{		
+				$arrInsert = $input;		
+				$arrInsert["created_by"] = \Auth::user()->id;
+				$arrInsert["mikrotik_id"] = $response;
+				$arrInsert["created_at"] = date("Y-m-d h:i:s");
+				unset($arrInsert["_token"]);  
+				DB::table("mikrotik")->insert($arrInsert);
+			}
 		}		
 		return redirect('/customer/list')->with('message', "Successfull update");
 	}
@@ -129,8 +155,12 @@ class CustomerController extends Controller {
 			    "name"          => $input["name"],
 			    "password"          => $input["password"],
 			    "profile"          => $input["profile"],
-			));				
+			));							
 			$this->api->disconnect(); 		
+			$arrUpdate = $input;		
+			$arrUpdate["updated_by"] = \Auth::user()->id;
+			unset($arrUpdate["_token"]);  
+			DB::table("mikrotik")->where("mikrotik_id", $id)->update($arrUpdate);
 		}
 		return redirect('/customer/list')->with('message', "Successfull delete");
 	}

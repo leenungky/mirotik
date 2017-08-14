@@ -142,8 +142,8 @@ $( document ).ready(function() {
 		}		
 		$("input[name='is_generate']").val("1");
 		var url = domain + "/generaterwb";
-		console.log(url);
-		$.ajax({
+		console.log(url);	
+	$.ajax({
 			url: url,
 			dataType: 'json',
 			success: function(result) {		  				
@@ -268,13 +268,8 @@ $( document ).ready(function() {
         }
     });
 
-    $("input[name='weight']").numeric();
-    $("input[name='total']").numeric();
-    $("input[name='discount']").numeric();
-    $("input[name=jam]" ).numeric();
-    $("input[name=menit]" ).numeric();
-    $("input[name=oneday_price]" ).numeric();
-    $("input[name=regular_price]" ).numeric();
+    $("input[name='day']").numeric();
+    
 
     $('.confirmation').on('click', function () {
         return confirm('Are you sure?');
@@ -284,6 +279,10 @@ $( document ).ready(function() {
     $( ".datepicker" ).datepicker({
     	dateFormat: "yy-mm-dd"
     });
+
+    $('.datetimepicker').datetimepicker({
+		 format: 'yyyy-mm-dd hh:ii'
+	});
 
     $('.email').tokenfield();
 

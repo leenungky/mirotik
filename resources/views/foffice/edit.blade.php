@@ -52,7 +52,25 @@
 						 		@endif
 						 	@endforeach
 						 </select>
-					</div>										
+					</div>		
+					<div class="cls_room" style="display: none;">
+						<div class="form-group">
+						    <label for="email">Dari</label>
+							 <input type="text" class="form-control datetimepicker" id="from" name="from" placeholder="input dari" value="{{isset($roomdb->from) ? $roomdb->from : ""}}">
+						</div>
+						<div class="form-group">
+						    <label for="email">To</label>
+							 <input type="text" class="form-control datetimepicker" id="to" name="to" placeholder="input to" value="{{isset($roomdb->to) ? $roomdb->to : ""}}">
+						</div>
+						<div class="form-group">
+						    <label for="email">Room</label>
+							 <input type="text" class="form-control" id="room" name="room" placeholder="input room" value="{{isset($roomdb->room) ? $roomdb->room : ""}}">
+						</div>						
+						<div class="form-group">
+						    <label for="email">Total Days</label>
+							 <input type="text" class="form-control " id="day" name="day" placeholder="input total day" value="{{ old('day') }}">
+						</div>
+					</div>								
 					<button type="submit" class="btn">Submit</button>
 				</form>
 			</div>
@@ -64,7 +82,29 @@
 </html>
 
 <script type="text/javascript">
-	$(document).ready(function(){	
-		$( "input[name=name]" ).focus();
+	$(document).ready(function(){			
+		@if ($usermkr["profile"]=="room_profile")
+			$(".cls_room").show();
+		@endif
+		$("select[name='profile']").change(function(){
+			if ($(this).val()=="room_profile"){
+				$("input[name='from']").prop("required", true);
+				$("input[name='to']").prop("required",true);
+				$("input[name='room']").prop("required",true);		
+				$("input[name='day']").prop("required",true);		
+				$(".cls_room").show();
+			}else{
+				$("input[name='from']").removeProp("required");
+				$("input[name='from']").val("");
+				$("input[name='to']").val("");
+				$("input[name='to']").removeProp("required");
+				$("input[name='room']").val("");
+				$("input[name='room']").removeProp("required");
+				$("input[name='day']").val("");
+				$("input[name='day']").removeProp("required");
+
+				$(".cls_room").hide();
+			}
+		});
 	});
 </script>

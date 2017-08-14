@@ -12,6 +12,7 @@
 	<link rel="stylesheet" href="{{ URL::asset('css/jquery-ui.min.css') }}" />
 	<link rel="stylesheet" href="{{ URL::asset('css/bootstrap-tokenfield.css') }}" />
 	<link rel="stylesheet" href="{{ URL::asset('css/tokenfield-typeahead.css') }}" />
+	<link rel="stylesheet" href="{{ URL::asset('css/bootstrap-datetimepicker.min.css') }}" />
 	<!-- 
 	this make popup background is black;
 	<link rel="stylesheet" href="http://code.jquery.com/mobile/1.4.5/jquery.mobile-1.4.5.min.css"> 
@@ -35,6 +36,8 @@
 	<script type="text/javascript" src="{{ URL::asset('js/bootstrap-tokenfield.js') }}"></script>
 	<!--<script src="https://cdn.jsdelivr.net/jquery.validation/1.16.0/jquery.validate.min.js"></script>-->
 	<script type="text/javascript" src="{{ URL::asset('js/jquery.validate.min.js') }}"></script>	
+	<script type="text/javascript" src="{{ URL::asset('js/bootstrap-datetimepicker.min.js') }}"></script>	
+	
 	<script type="text/javascript" src="{{ URL::asset('js/custom.js') }}"></script>	
 	
 
