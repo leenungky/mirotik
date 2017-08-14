@@ -304,7 +304,6 @@ function printDivIcon(divName) {
  	window.print();	   			
 	document.body.innerHTML = originalContents;
 	location.reload();
-
 }
 
 function onEnter(e){

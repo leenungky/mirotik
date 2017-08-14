@@ -76,11 +76,50 @@ class CustomerController extends Controller {
 		return view('foffice.edit', $this->data);
 	}
 
+	public function getDelete($id){
+		if ($this->data["role"]!="administrator"){
+			return redirect('/customer/list');
+		}
+		if ($this->api->connect($this->connect["host"], 
+				$this->connect["user"], 
+				$this->connect["password"])) {
+			$remove=$this->api->comm($this->path."/user/remove",Array( 				
+			 	 ".id" => $id,
+			));			
+			$this->api->disconnect(); 
+			DB::table("mikrotik")->where("mikrotik_id", $id)->update(array("deleted_by" =>\Auth::user()->id));
+		}
+		return redirect('/customer/list')->with('message', "Successfull delete");
+	}
+
+	public function getList(){	
+		if (empty($this->data["role"])){
+			return redirect('/user/logout');		
+		}
+		$this->data["usermkr"] = array();
+		if ($this->api->connect($this->connect["host"], 
+			$this->connect["user"], 
+			$this->connect["password"])) {						
+			$this->data["usermkr"] = $this->api->comm($this->path."/user/print");						
+			$this->data["userprofile"] = $this->api->comm($this->path."/user/profile/print");						
+			$this->api->disconnect(); 			
+		}	
+		return view('foffice.index', $this->data);
+		
+	}
+
+
 	public function getPrint(){
 		$req = $this->data["req"];
-		$code = $req->input("order_no", ""); 
-		$res = DNS2D::getBarcodePNG($code, "QRCODE", 5,5);		
-		$res = array("response"=>array("code"=>200 , "messsage" => "ok"), "data" => array("username" => "asep", "password" =>"teuing"), "qrcode" => $res);
+		$name = $req->input("name", ""); 
+		$code = $req->input("password", ""); 		
+		if (empty($code)){
+			$res = "";			
+		}else{		
+			$res = DNS2D::getBarcodePNG($code, "QRCODE", 5,5);			
+		}
+		
+		$res = array("response"=>array("code"=>200 , "messsage" => "ok"), "data" => array("name" => $code, "password" =>$name), "qrcode" => $res);
         return response()->json($res);
 	}
 
@@ -165,35 +204,5 @@ class CustomerController extends Controller {
 		return redirect('/customer/list')->with('message', "Successfull delete");
 	}
 
-	public function getDelete($id){
-		if ($this->data["role"]!="administrator"){
-			return redirect('/customer/list');
-		}
-		if ($this->api->connect($this->connect["host"], 
-				$this->connect["user"], 
-				$this->connect["password"])) {
-			$remove=$this->api->comm($this->path."/user/remove",Array( 				
-			 	 ".id" => $id,
-			));			
-			$this->api->disconnect(); 
-		}
-		return redirect('/customer/list')->with('message', "Successfull delete");
-	}
-
-	public function getList(){	
-		if (empty($this->data["role"])){
-			return redirect('/user/logout');		
-		}
-		$this->data["usermkr"] = array();
-		if ($this->api->connect($this->connect["host"], 
-			$this->connect["user"], 
-			$this->connect["password"])) {						
-			$this->data["usermkr"] = $this->api->comm($this->path."/user/print");						
-			$this->data["userprofile"] = $this->api->comm($this->path."/user/profile/print");						
-			$this->api->disconnect(); 			
-		}	
-		return view('foffice.index', $this->data);
 		
-	}
-	
 }
