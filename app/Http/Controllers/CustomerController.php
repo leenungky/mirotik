@@ -12,6 +12,7 @@ use App\Lib\SiteHelpers;
 use App\Lib\RouterosApi;
 use \DB;
 use \URL;
+use DNS2D;
 
 class CustomerController extends Controller {
 
@@ -20,24 +21,32 @@ class CustomerController extends Controller {
 	private $output;
 	private $connect;
 	private $role;
+	private $api;
+	private $path = "";
 	public function __construct(Request $req) {
 		$this->data["type"]= "User_Mikrotik";      
 		$this->data["req"] = $req;
-		$this->data["role"] = strtolower($req->session()->get("role", ""));
+		$this->data["role"] = strtolower($req->session()->get("role", ""));				
 		$this->api = new RouterosApi();
 		$this->api->debug = false;
 		$this->api->port = 8729;
 		$this->api->ssl = true;
 		$this->api->timeout = 30;
-		$this->connect = array("host" => "180.250.113.42", "user" => "nungky", "password" => "123");
-		// $this->connect = array("host" => "202.169.46.205", "user" => "nungky", "password" => "cabin888");
-		
+		$this->path = "/ip/hotspot";		
+		// $this->connect = array("host" => "180.250.113.42", "user" => "nungky", "password" => "123");				
+		$this->connect = array("host" => "202.169.46.205", "user" => "nungky", "password" => "cabin888");		
 	} 
 	
 	public function getAdd(){			
 		if ($this->data["role"]!="administrator"){
 			return redirect('/customer/list');
 		}			
+		if ($this->api->connect($this->connect["host"], 
+			$this->connect["user"], 
+			$this->connect["password"])) {						
+			$this->data["profiles"] = $this->api->comm("/ip/hotspot/user/profile/print");			
+			$this->api->disconnect(); 			
+		}	
 		return view('foffice.new', $this->data);
 	}
 
@@ -48,12 +57,21 @@ class CustomerController extends Controller {
 		if ($this->api->connect($this->connect["host"], 
 				$this->connect["user"], 
 				$this->connect["password"])) {
-			$arr=$this->api->comm("/tool/user-manager/user/print",Array( 				
+			$arr=$this->api->comm($this->path."/user/print",Array( 				
 			 	 "?.id" => $id
 			)); 			
+			$this->data["profiles"] = $this->api->comm($this->path."/user/profile/print");						
 			$this->data["usermkr"] = $arr[0];			
 		}		
 		return view('foffice.edit', $this->data);
+	}
+
+	public function getPrint(){
+		$req = $this->data["req"];
+		$code = $req->input("order_no", ""); 
+		$res = DNS2D::getBarcodePNG($code, "QRCODE", 5,5);		
+		$res = array("response"=>array("code"=>200 , "messsage" => "ok"), "data" => array("username" => "asep", "password" =>"teuing"), "qrcode" => $res);
+        return response()->json($res);
 	}
 
 	public function postCreate(){
@@ -62,8 +80,9 @@ class CustomerController extends Controller {
 		}
 		$req = $this->data["req"];
         $validator = Validator::make($req->all(), [            
-            'username' => 'required',       
-            'password' => 'required'          
+            'name' => 'required',       
+            'password' => 'required',
+            'profile' => 'required',
         ]);
 
         if ($validator->fails()) {            
@@ -74,13 +93,12 @@ class CustomerController extends Controller {
 		if ($this->api->connect($this->connect["host"], 
 				$this->connect["user"], 
 				$this->connect["password"])) {
-			$response=$this->api->comm("/tool/user-manager/user/add",Array( 
-				"customer" => "admin",
-				"username" => $input['username'],				
+			$response=$this->api->comm($this->path."/user/add",Array( 				
+				"name" => $input['name'],				
 				"password" => $input['password'],
-				"shared-users" => "1",
+				"profile" => $input['profile']
 			));
-			$this->api->disconnect(); 		
+			$this->api->disconnect(); 					
 			if (isset($response["!trap"][0]["message"])){
 				return redirect('/customer/add')->withInput(Input::all())->with('message', $response["!trap"][0]["message"]);
 			}			
@@ -94,8 +112,9 @@ class CustomerController extends Controller {
 		}
 		$req = $this->data["req"];
         $validator = Validator::make($req->all(), [            
-            'username' => 'required',       
-            'password' => 'required'          
+            'name' => 'required',       
+            'password' => 'required',
+            'profile' => 'required'          
         ]);
 
         if ($validator->fails()) {            
@@ -105,10 +124,11 @@ class CustomerController extends Controller {
 		if ($this->api->connect($this->connect["host"], 
 				$this->connect["user"], 
 				$this->connect["password"])) {
-			$response = $this->api->comm("/tool/user-manager/user/set",array(
+			$response = $this->api->comm($this->path."/user/set",array(
 			    ".id"               => $id,
-			    "username"          => $input["username"],
-			    "password"          => $input["password"]
+			    "name"          => $input["name"],
+			    "password"          => $input["password"],
+			    "profile"          => $input["profile"],
 			));				
 			$this->api->disconnect(); 		
 		}
@@ -122,7 +142,7 @@ class CustomerController extends Controller {
 		if ($this->api->connect($this->connect["host"], 
 				$this->connect["user"], 
 				$this->connect["password"])) {
-			$remove=$this->api->comm("/tool/user-manager/user/remove",Array( 				
+			$remove=$this->api->comm($this->path."/user/remove",Array( 				
 			 	 ".id" => $id,
 			));			
 			$this->api->disconnect(); 
@@ -131,11 +151,15 @@ class CustomerController extends Controller {
 	}
 
 	public function getList(){	
+		if (empty($this->data["role"])){
+			return redirect('/user/logout');		
+		}
 		$this->data["usermkr"] = array();
 		if ($this->api->connect($this->connect["host"], 
 			$this->connect["user"], 
-			$this->connect["password"])) {
-			$this->data["usermkr"] = $this->api->comm("/tool/user-manager/user/print");						
+			$this->connect["password"])) {						
+			$this->data["usermkr"] = $this->api->comm($this->path."/user/print");						
+			$this->data["userprofile"] = $this->api->comm($this->path."/user/profile/print");						
 			$this->api->disconnect(); 			
 		}	
 		return view('foffice.index', $this->data);

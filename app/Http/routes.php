@@ -17,7 +17,8 @@ Route::get('/', [
 ]);
 
 
-Route::group(['middleware' => 'logic'], function(){
+// Route::group(['middleware' => 'logic'], function(){
 	Route::controller('/user', 'UserController');
 	Route::controller('/customer', 'CustomerController');
-});
+	Route::controller('/room', 'RoomController');
+// });

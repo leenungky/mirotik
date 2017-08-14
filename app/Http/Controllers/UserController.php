@@ -161,15 +161,13 @@ class UserController extends Controller {
 	}
 
 	public function getLogin() {
-	
-		if(\Auth::check())
-		{
-			return Redirect::to('/customer')->with('message','Youre already login');
-
-		} else {
+		$req = $this->data["req"]; 
+		$role = $req->session()->get("role", "");
+		if(empty($role)){
 			$this->data['socialize'] =  config('services');
-			return View('auth.login',$this->data);
-			
+			return View('auth.login',$this->data);			
+		} else {
+			return Redirect::to('/customer/list')->with('message','Youre already login');			
 		}	
 	}
 

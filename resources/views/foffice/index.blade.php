@@ -41,8 +41,9 @@
 				<table class="table">					
 					<thead>
 						<th>No</th>
-						<th>Username</th>			    																				
-						<th>Password</th>			    																				
+						<th>Username</th>
+						<th>Password</th>
+						<th>Profile</th>
 						<th>Action</th>
 					</thead>
 					<tbody>
@@ -50,8 +51,9 @@
 						@foreach ($usermkr as $key => $value)
 							<tr>
 								<td>{{($key+1)}}</td>
-								<td>{{$value["username"]}}</td>								
-								<td>{{$value["password"]}}</td>								
+								<td>{{$value["name"]}}</td>								
+								<td>{{isset($value["password"]) ? $value["password"] : ""}}</td>								
+								<td>{{isset($value["profile"]) ? $value["profile"] : ""}}</td>								
 								<td>
 									@if ($role=="administrator")
 										<a href="/customer/edit/{{$value[".id"]}}">
@@ -79,5 +81,75 @@
 		</div>
 	 </div>	    	
 </div>
+<div class="row" id="printableArea">
+		<div class="left" style="width: 230px; font-size: 8px; margin-left: 10px">
+			<div><br/>
+				<div style="font-size: 11px;font-weight: bold; border-top:1px solid orange">
+					USERNAME : test123
+				</div>				
+				<div style="font-size: 11px;font-weight: bold; border-top:1px solid orange">
+					<span style="color: orange">PASSWORD</span> : 12345
+				</div>						
+				
+				<span id="qr-name" style="font-weight: bold;"></span><br/><br/>
+			</div>
+    	</div>
+    	<div class="left" style="text-align: center;width: 100px;">
+    		<br/>
+    		<div>    				
+    			<span style="font-size: 13px;font-weight: bold;">BintangKiriman</span><br/>
+    			<span style="font-size: 11px;">Scan barcode ini :</span>
+    		</div>
+    		<div style="width: 100px;padding: 10px 0px;">
+			   	<img src="" alt="barcode" id="qrcode" />				   	
+			</div>
+    	</div>
+    	<div style="clear: both;"></div>    		
+    	<div class="left" style="width: 350px; margin-left: 10px">
+    		--------------------------------------------------------------------------
+    	</div>
+    	<br/>
+    	<div style="clear: both;"></div>
+    	<div class="left full-desc" style="width: 350px;font-size: 7px; margin-left: 10px; margin-right: 10px;">    					
+
+			<p>
+				http:/cabinhotel.co.id
+			</p>
+    	</div>
+
+    	<div style="clear: both;"></div><br/>    		
+   	</div>
 </body>
 </html>
+
+<script type="text/javascript">	
+	
+   
+	$('.print').click(function(e) { // catch the form's submit event		
+		var order_no = $(this).attr("val");
+		var url = "/customer/print?order_no=aaaa"; // the script where you handle the form input.		
+	    $.ajax({
+	           type: "GET",
+	           url: url,
+	           data: $(this).serialize(), // serializes the form's elements.
+	           success: function(result){
+	           		if (result.response.code=="200"){
+	           			console.log(result);
+	           			$(".spancode").text("");
+	           			$("#qrcode").attr("src","data:image/png;base64," + result.qrcode);					           			
+	           			$("#label-dest").text("Alamat");
+						$("#qr-name").text("");
+						$("#qr-phone").text("");
+						$("#qr-full-address").html("");
+						$("#qr-kecamatan").html("");
+						$("#qr-weight").text("");            			
+	           			setTimeout(function(){
+						  printDivIcon('printableArea');
+						}, 1000);
+	           		}
+	           }
+	        });		
+		return false;	    
+	});
+
+</script>

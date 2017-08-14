@@ -46,11 +46,19 @@
 					<input type="hidden" name="_token" value="{{ csrf_token() }}">					
 					<div class="form-group">
 					    <label for="email">Username</label>
-						 <input type="text" class="form-control" id="username" name="username" placeholder="input username" value="{{ old('username') }}" required>
+						 <input type="text" class="form-control" id="name" name="name" placeholder="input name" value="{{ old('username') }}" required>
 					</div>		
 					<div class="form-group">
 					    <label for="email">Password</label>
 						 <input type="text" class="form-control" id="password" name="password" placeholder="input password" value="{{ old('password') }}" required>
+					</div>
+					<div class="form-group">
+					    <label for="email">Profile</label>
+						 <select name="profile" class="form-control">
+						 	@foreach ($profiles as $key => $value)
+						 		<option>{{$value["name"]}}</option>
+						 	@endforeach
+						 </select>
 					</div>										
 					<button type="submit" class="btn">Submit</button>
 				</form>

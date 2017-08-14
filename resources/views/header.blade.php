@@ -13,7 +13,7 @@
 <nav class="navbar navbar-inverse">
   <div class="container-fluid">
     <div class="navbar-header">
-      <a class="navbar-brand" href="#">WebSiteName</a>
+      <a class="navbar-brand" href="/customer/list">MIKROTIK</a>
     </div>
     <div>
       <ul class="nav navbar-nav">        
@@ -24,23 +24,27 @@
             <li><a href="/customer/list">Data</a></li>                          
           </ul>
         </li>
-        @if ($role=="administrator")
+        
             <li class="dropdown">
               <a class="dropdown-toggle" data-toggle="dropdown" href="#">Master Data
               <span class="caret"></span></a>
               <ul class="dropdown-menu">
+                  @if ($role=="administrator")
                     <li><a href="/user/list">User</a></li>                          
                     <li role="separator" class="divider"></li>  
+                  @endif
+                  <li><a href="/room/list">Room</a></li>     
+                    <!--<li role="separator" class="divider"></li>
                     <li class="dropdown-submenu">
                         <a tabindex="-1" href="#">Item 2<i class="glyphicon glyphicon-chevron-right"></i></a>
                         <ul class="dropdown-menu">
                             <li><a href="/payroll/list">Item 2 1</a></li>
                             <li role="separator" class="divider"></li>                                             
                         </ul>
-                    </li>   
+                    </li>  -->  
               </ul>
             </li>        
-            @endif
+            
     </ul>
       
       <ul class="nav navbar-nav navbar-right">

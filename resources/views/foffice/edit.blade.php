@@ -35,11 +35,23 @@
 					<input type="hidden" name="_token" value="{{ csrf_token() }}">					
 					<div class="form-group">
 					    <label for="email">Username</label>
-						 <input type="text" class="form-control" id="username" name="username" placeholder="input username" value="{{$usermkr["username"]}}" required>
+						 <input type="text" class="form-control" id="name" name="name" placeholder="input name" value="{{$usermkr["name"]}}" required>
 					</div>		
 					<div class="form-group">
 					    <label for="email">Password</label>
 						 <input type="text" class="form-control" id="password" name="password" placeholder="input password" value="{{ $usermkr["password"] }}" required>
+					</div>								
+					<div class="form-group">
+					    <label for="email">Profile</label>
+						 <select name="profile" class="form-control">
+						 	@foreach ($profiles as $key => $value)
+						 		@if ($value["name"]==$usermkr["profile"])
+						 			<option selected>{{$value["name"]}}</option>
+						 		@else
+						 			<option>{{$value["name"]}}</option>
+						 		@endif
+						 	@endforeach
+						 </select>
 					</div>										
 					<button type="submit" class="btn">Submit</button>
 				</form>
