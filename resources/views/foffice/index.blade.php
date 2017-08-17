@@ -21,15 +21,13 @@
  <div id="contents">
     <div class="container container-fluid">            	
 		@include('header')		
-		<br/>		
-		@if ($role=="administrator")
-			<div class="row">	
+		<br/>				
+		<div class="row">	
 				<div class="col-md-12">
 				<a href="/customer/add">Create</a>
 				</div>
 			</div>
-			<br/>
-		@endif
+			<br/>		
 		 @if(Session::has('message'))
             <div class="row">
                 <div class="col-md-12 alert alert-warning">      
@@ -92,10 +90,10 @@
 				<div style="width: 100px;margin-left: 50px;margin-right: 50px;margin-bottom:20px; ">
 			   		<img src="{{ URL::asset('img/wifi.png') }}" width="30px">    			
 				</div>
-				<div style="font-size: 11px;font-weight: bold; border-top:1px solid orange; padding: 10px;">
+				<div style="font-size: 10px;font-weight: bold; border-top:1px solid orange; padding: 10px;">
 					<span class="txt-attr">USERNAME</span> : <span class="val-name"></span>
 				</div>				
-				<div style="font-size: 11px;font-weight: bold; border-top:1px solid orange; border-bottom: 1px solid orange; padding: 10px;">
+				<div style="font-size: 10px;font-weight: bold; border-top:1px solid orange; border-bottom: 1px solid orange; padding: 10px;">
 					<span class="txt-attr">PASSWORD</span> : <span class="val-password"></span>
 				</div>						
 				

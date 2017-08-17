@@ -37,10 +37,7 @@ class CustomerController extends Controller {
 		$this->connect = array("host" => "202.169.46.205", "user" => "nungky", "password" => "cabin888");		
 	} 
 	
-	public function getAdd(){			
-		if ($this->data["role"]!="administrator"){
-			return redirect('/customer/list');
-		}			
+	public function getAdd(){					
 		if ($this->api->connect($this->connect["host"], 
 			$this->connect["user"], 
 			$this->connect["password"])) {						
@@ -120,7 +117,7 @@ class CustomerController extends Controller {
 			$res = DNS2D::getBarcodePNG($code, "QRCODE", 5,5);			
 		}
 		
-		$res = array("response"=>array("code"=>200 , "messsage" => "ok"), "data" => array("name" => $code, "password" =>$name), "qrcode" => $res);
+		$res = array("response"=>array("code"=>200 , "messsage" => "ok"), "data" => array("name" => $name, "password" =>$code), "qrcode" => $res);
         return response()->json($res);
 	}
 

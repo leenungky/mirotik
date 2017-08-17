@@ -22,6 +22,9 @@ class ReportController extends Controller {
         if (empty($this->data["role"])) {
             die("You are not user, please login");
         }
+        if ($this->data["role"]!="administrator"){
+            die("");
+        }
     }
 
 	public function getList(){  

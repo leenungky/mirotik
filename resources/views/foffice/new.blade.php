@@ -55,14 +55,14 @@
 					<div class="form-group">
 					    <label for="email">Profile</label>
 						 <select name="profile" class="form-control">
-						 	@foreach ($profiles as $key => $value)
-						 		@if ($value["name"]==old("profile"))
-						 			<option selected>{{$value["name"]}}</option>
-						 		@else
-						 			<option>{{$value["name"]}}</option>
-						 		@endif
-						 		
-						 	@endforeach
+						 	@if ($role=="administrator")							 	
+							 	<option>room_profile</option>
+							 	<option>management_profile</option>
+								<option>meeting_profile</option>
+							@else
+								<option>room_profile</option>
+								<option>meeting_profile</option>
+						 	@endif 
 						 </select>
 					</div>	
 					<div class="cls_room" style="display: none;">
