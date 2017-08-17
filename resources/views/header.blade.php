@@ -28,13 +28,13 @@
         <li class="dropdown">
               <a class="dropdown-toggle" data-toggle="dropdown" href="#">Master Data
               <span class="caret"></span></a>
-              <ul class="dropdown-menu">
-                  
-                    <li><a href="/user/list">User</a></li>                          
-                    <!-- 
+              <ul class="dropdown-menu">                  
+                    <li><a href="/user/list">User</a></li>                                              
                     <li role="separator" class="divider"></li>  
                   
-                  <li><a href="/room/list">Room</a></li>      -->
+                    <li><a href="/room/list">Room</a></li>      
+                    <li role="separator" class="divider"></li>                    
+                    <li><a href="/meetroom/list">Meeting Room</a></li>      
                     <!--<li role="separator" class="divider"></li>
                     <li class="dropdown-submenu">
                         <a tabindex="-1" href="#">Item 2<i class="glyphicon glyphicon-chevron-right"></i></a>

@@ -1,0 +1,5 @@
+ALTER TABLE `mikrotik` CHANGE `room` `room_id` INT NOT NULL;	
+ALTER TABLE `mikrotik` CHANGE `from` `from` DATE NOT NULL;
+ALTER TABLE `mikrotik` CHANGE `to` `to` DATE NOT NULL;
+ALTER TABLE `mikrotik` CHANGE `meetroom_id` `meetroom_id` INT(11) NULL;
+ALTER TABLE `mikrotik` CHANGE `room_id` `room_id` INT(11) NULL;

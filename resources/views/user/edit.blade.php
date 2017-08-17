@@ -49,7 +49,7 @@
 					    <label for="email">Role User</label>
 						<select name="role" class="form-control">
 							<option>Pilih Role</option>
-							@foreach ($role as $key => $value)
+							@foreach ($roles as $key => $value)
 								@if ($value->id==$user->role_id)
 									<option value="{{$value->id}}" selected>{{$value->name}}</option>
 								@else
@@ -66,7 +66,8 @@
 					    <label for="pwd">Password Confirmation:</label>
 					    <input type="password" class="form-control" name="password_confirmation" placeholder="input password" value="{{ old('password_confirmation') }}">
 					</div>
-					<button type="submit" class="btn">Submit</button>
+					<button type="submit" class="btn btn-primary">Submit</button>
+					<a href="/room/list" class="btn btn-primary">Cancel</a>
 				</form>
 			</div>
 			

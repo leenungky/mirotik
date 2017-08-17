@@ -159,6 +159,7 @@ return [
         App\Providers\RouteServiceProvider::class,        
         Barryvdh\DomPDF\ServiceProvider::class,
         Collective\Remote\RemoteServiceProvider::class,
+        SimpleSoftwareIO\QrCode\QrCodeServiceProvider::class,
     ],
 
     /*
@@ -209,6 +210,7 @@ return [
         'SiteHelpers'   => 'App\Lib\SiteHelpers',
         'PDF' => Barryvdh\DomPDF\Facade::class,
         'SSH' => Collective\Remote\RemoteFacade::class,
+        'QrCode' => SimpleSoftwareIO\QrCode\Facades\QrCode::class,
 
     ],
 

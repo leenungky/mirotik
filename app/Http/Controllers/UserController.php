@@ -17,8 +17,8 @@ class UserController extends Controller {
 	
 	protected $layout = "layouts.main";
 
-	public function __construct(Request $req) {
-		$this->data["type"]= "User"; 
+	public function __construct(Request $req) 
+{		$this->data["type"]= "User"; 
 		$this->data["req"]= $req; 
 		$this->data["role"] =  $req->session()->get("role", ""); 
 	} 
@@ -28,8 +28,8 @@ class UserController extends Controller {
 			return redirect('/customer/list');
 		}	
 		$req = $this->data["req"];
-		$role = DB::table("tb_role")->get();						
-		$this->data["role"] = $role;
+		$roles = DB::table("tb_role")->get();						
+		$this->data["roles"] = $roles;
 		return view('user.new', $this->data);  
 	}
 	public function getList(){
@@ -50,8 +50,8 @@ class UserController extends Controller {
 		}
 		$req = $this->data["req"];
 		$user = DB::table("tb_users")->where("id" , $id)->first();	
-		$role = DB::table("tb_role")->get();										
-		$this->data["role"] = $role;
+		$roles = DB::table("tb_role")->get();										
+		$this->data["roles"] = $roles;
 		$this->data["user"] = $user;
 		$this->data["req"] = $req;
 		return view('user.edit', $this->data);  

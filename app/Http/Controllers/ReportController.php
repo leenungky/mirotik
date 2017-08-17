@@ -121,10 +121,12 @@ class ReportController extends Controller {
     }
 
 	private function _get_index_filter($filter){
-        $sql = "SELECT mikrotik.*, created.email as vcreate, updated.email as vupdate, deleted.email as vdelete FROM `mikrotik` 
+        $sql = "SELECT mikrotik.*, room.name as roomname, meetroom.name as meet_room_name, created.email as vcreate, updated.email as vupdate, deleted.email as vdelete FROM `mikrotik`
                 left join tb_users as created on created.id=mikrotik.created_by
                 left join tb_users as updated on updated.id=mikrotik.updated_by
-                left join tb_users as deleted on deleted.id=mikrotik.deleted_by";        
+                left join tb_users as deleted on deleted.id=mikrotik.deleted_by
+                left join meetroom on meetroom.id=mikrotik.meetroom_id
+                left join room on room.id=mikrotik.room_id";     
         return $sql." Order By mikrotik.id asc ";
     }
 

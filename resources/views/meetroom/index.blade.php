@@ -32,7 +32,26 @@
 				    </ul>
 			    </div>
 		    </div>
-		@endif 		
+		@endif 
+		<div class="row">	
+			<form action="/room/list" method="get">				
+				<div class="col-md-4">
+					Room Name<br/>
+					<input type="text" name="name" class="form-control" value="{{isset($input["name"]) ? $input["name"] : ""}}">
+				</div>				
+				<div class="col-md-8">
+					<br/>
+					<input type="submit" value="find" class="btn">
+				</div>
+			</form>
+		</div>
+		<br/>
+		<div class="row">	
+			<div class="col-md-12">
+			<a href="/meetroom/add">Create</a>
+			</div>
+		</div>
+		<br/>
 		<div class="row">	
 			<div class="col-md-12">
 				<table class="table">
@@ -48,36 +67,27 @@
 						}
 					?>
 					<thead>
-						<th>Name</th>
-			    		<th>profile</th>			    		
-						<th>Room</th>
-						<th>Meeting Room</th>
-						<th>from</th>
-						<th>to</th>
-						<th>day</th>
-						<th>created_by</th>
-						<th>created_at</th>
-						<th>update_by</th>
-						<th>update_at</th>
-						<th>delete_by</th>
-						<th>delete_at</th>
+						<th>Room Name</th>
+			    		<th>Description</th>			    		
+						<th>Action</th>
 					</thead>
 					<tbody>
-						@foreach ($report as $key => $value)
+						@foreach ($meetroom as $key => $value)
 							<tr>
 								<td>{{$value->name}}</td>
-								<td>{{$value->profile}}</td>
-								<td>{{$value->roomname}}</td>
-								<td>{{$value->meet_room_name}}</td>
-								<td>{{$value->from}}</td>
-								<td>{{$value->to}}</td>
-								<td>{{$value->day}}</td>
-								<td>{{$value->vcreate}}</td>
-								<td>{{$value->created_at}}</td>
-								<td>{{$value->vupdate}}</td>
-								<td>{{$value->updated_at}}</td>
-								<td>{{$value->vdelete}}</td>
-								<td>{{$value->deleted_at}}</td>								
+								<td>{{$value->description}}</td>								
+								<td>
+									<a href="/meetroom/edit/{{$value->id}}">
+										<span class="edit"> 
+					    					<span class="glyphicon glyphicon-pencil"></span>
+					    				</span>
+				    				</a> | 
+				    				<a href="/meetroom/delete/{{$value->id}}" class="confirmation">
+					    				<span class="delete">
+				    						<span class="glyphicon glyphicon-remove"></span>
+				    					</span> 
+			    					</a>
+								</td>
 							</tr>																							
 						@endforeach
 					</tbody>
@@ -86,7 +96,5 @@
 		</div>
 	 </div>	    	
 </div>
-
 </body>
 </html>
-

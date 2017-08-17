@@ -12,7 +12,7 @@ use Illuminate\Support\Facades\Redirect;
 use \URL;
 use \PHPExcel_IOFactory, \PHPExcel_Style_Fill, \PHPExcel_Cell, \PHPExcel_Cell_DataType, \SiteHelpers;
 
-class RoomController extends Controller {
+class MeetroomController extends Controller {
     
     var $data;
     public function __construct(Request $req){
@@ -29,24 +29,38 @@ class RoomController extends Controller {
         $input= $req->input();     
         $dbRoom = $this->_get_index_filter($input);        
         $this->data["input"] = $input;
-        $this->data["room"] = $dbRoom->get();
-        return view('room.index', $this->data);
+        $this->data["meetroom"] = $dbRoom->get();
+        return view('meetroom.index', $this->data);
     }
 
     public function getAdd(){		
-		return view('room.new', $this->data);  
+		return view('meetroom.new', $this->data);  
 	}
 
-    public function getDelete($id){       
-        $room = DB::table("room")->where("id", $id)->delete();       
-        return redirect('/room/list')->with('message', "Successfull delete");
+    public function getSetcitykecamatan($id){
+        $city = DB::table("tb_cities")->where("id", $id)->first();
+        $role_user_kecamatan = DB::select("select kecamatan_id from city_kecamatan where city_id=".$id);
+        $kecamatan_id_arr = array();
+        foreach ($role_user_kecamatan as $key => $value) {
+            $kecamatan_id_arr[] = $value->kecamatan_id;
+        }       
+        $kecamatan = DB::table("tb_rapid_tarif")
+            ->whereNotIn("id", $kecamatan_id_arr)
+            ->where("city", "like" , "%".$city->name."%")
+            ->orderBy("kecamatan", "asc")->get();  
+        $result_kecamatan = DB::table("tb_rapid_tarif")->whereIn("id", $kecamatan_id_arr)->orderBy("kecamatan", "asc")->get();        
+    
+        $this->data["kecamatan"] = $kecamatan;
+        $this->data["result_kecamatan"] = $result_kecamatan;
+        $this->data["city"] = $city;
+        return view('city.setkecamatan', $this->data);  
+
     }
 
-    
 	public function getEdit($id){
-		$room = DB::table("room")->where("id", $id)->first();       
-		$this->data["room"] = $room;
-		return view('room.edit', $this->data);  
+		$room = DB::table("meetroom")->where("id", $id)->first();       
+		$this->data["meetroom"] = $room;
+		return view('meetroom.edit', $this->data);  
 	}
 
 	public function postCreate(){	
@@ -61,8 +75,8 @@ class RoomController extends Controller {
         $arrInsert = $req->input();
         $arrInsert["created_at"] = date("Y-m-d h:i:s");
         unset($arrInsert["_token"]);        
-        DB::table("room")->insert($arrInsert);        
-        return redirect('/room/list')->with('message', "Successfull create");			
+        DB::table("meetroom")->insert($arrInsert);        
+        return redirect('/meetroom/list')->with('message', "Successfull create");			
 	}
 
      public function getCitiesfromkec(Request $req){
@@ -84,27 +98,13 @@ class RoomController extends Controller {
         $arrUpdate = $req->input();
         
         unset($arrUpdate["_token"]);        
-        DB::table("room")->where("id", $id)->update($arrUpdate);        
-        return redirect('/room/list')->with('message', "Successfull update");			
+        DB::table("meetroom")->where("id", $id)->update($arrUpdate);        
+        return redirect('/meetroom/list')->with('message', "Successfull update");			
 	}
 
-    public function postAddcitykecamatan(){
-        $req = $this->data["req"];
-        DB::table("city_kecamatan")->where("city_id", $req->input("city_id"))->delete();       
-        if ($req->input("ids_kecamatan")!=null ){
-            $allInsert =array();
-            foreach ($req->input("ids_kecamatan") as $key => $value) {
-                $allInsert[] = array("city_id" => $req->input("city_id"), 
-                    "kecamatan_id" => $value, 
-                    "created_at" => date("y-m-d h:i:s"));           
-            }
-            DB::table("city_kecamatan")->insert($allInsert);
-        }
-        return Redirect::to('/cities/setcitykecamatan/'.$req->input("city_id"));
-    }
-
+  
 	private function _get_index_filter($filter){
-        $dbcust = DB::table("room");
+        $dbcust = DB::table("meetroom");
         if (isset($filter["name"])){
             $dbcust = $dbcust->where("name", "like", "%".$filter["name"]."%");
         }        

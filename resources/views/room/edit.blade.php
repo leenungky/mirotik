@@ -34,7 +34,7 @@
 				<form method="post" action="/room/update/{{$room->id}}" class="formsubmit">
 					<input type="hidden" name="_token" value="{{ csrf_token() }}">									
 					<div class="form-group">
-					    <label for="email">Firstname</label>
+					    <label for="email">Room Name</label>
 						 <input type="text" class="form-control" id="name" name="name" placeholder="input room name" value="{{$room->name}}" required>
 					</div>					
 					<div class="form-group">

@@ -54,33 +54,95 @@
 					</div>
 					<div class="form-group">
 					    <label for="email">Profile</label>
-						 <select name="profile" class="form-control">
+						<select name="profile" class="form-control" required>
+						<option value="">Pilih Profile</option>
 						 	@if ($role=="administrator")							 	
-							 	<option>room_profile</option>
-							 	<option>management_profile</option>
-								<option>meeting_profile</option>
+						 		@if (old("profile")=="room_profile")
+								 	<option selected>room_profile</option>
+							 	@else
+							 		 <option>room_profile</option>
+							 	@endif
+
+							 	@if (old("profile")=="management_profile")
+								 	<option selected>management_profile</option>
+							 	@else
+							 		 <option>management_profile</option>
+							 	@endif
+
+							 	@if (old("profile")=="meeting_profile")								 	
+								 	<option selected>meeting_profile</option>
+							 	@else
+							 		 <option>meeting_profile</option>
+							 	@endif
 							@else
-								<option>room_profile</option>
-								<option>meeting_profile</option>
+								@if (old("profile")=="room_profile")
+								 	<option selected>room_profile</option>
+							 	@else
+							 		 <option>room_profile</option>
+							 	@endif
+							 	@if (old("profile")=="meeting_profile")								 	
+								 	<option selected>meeting_profile</option>
+							 	@else
+							 		 <option>meeting_profile</option>
+							 	@endif
 						 	@endif 
 						 </select>
 					</div>	
-					<div class="cls_room" style="display: none;">
-						<div class="form-group">
+					<div class="cls_room" style="display: none;"> <!-- <div class="form-group">
 						    <label for="email">Dari</label>
 							 <input type="text" class="form-control datetimepicker" id="from" name="from" placeholder="input dari" value="{{ old('from') }}">
 						</div>
 						<div class="form-group">
 						    <label for="email">To</label>
 							 <input type="text" class="form-control datetimepicker" id="to" name="to" placeholder="input to" value="{{ old('to') }}">
-						</div>
+						</div> -->
 						<div class="form-group">
 						    <label for="email">Room</label>
-							 <input type="text" class="form-control" id="room" name="room" placeholder="input room" value="{{ old('room') }}">
+						    <select name="room_id" class="form-control">
+						    	<option value="">Pilih Room</option>
+						    	@foreach ($room as $key => $value)
+						    		@if (in_array($value->id, $arr_room_id_use))
+						    			@if (old("room_id")==$value->id)
+						    				<option value="{{$value->id}}" style="color:red; font-weight: bold;" selected>{{$value->name}}</option>
+						    			@else
+						    				<option value="{{$value->id}}" style="color:red; font-weight: bold;">{{$value->name}}</option>
+						    			@endif
+						    		@else
+						    			@if (old("room_id")==$value->id)
+						    				<option value="{{$value->id}}" selected>{{$value->name}}</option>
+						    			@else
+						    				<option value="{{$value->id}}">{{$value->name}}</option>
+						    			@endif						    			
+						    		@endif						    		
+						    	@endforeach
+						    </select>							 
 						</div>						
 						<div class="form-group">
 						    <label for="email">Total Days</label>
 							 <input type="text" class="form-control " id="day" name="day" placeholder="input total day" value="{{ old('day') }}">
+						</div>
+					</div>
+					<div class="cls_meetroom" style="display: none;"> 
+						<div class="form-group">
+							    <label for="email">Meeting Room Name</label>
+								<select name="meetroom_id" class="form-control">
+							    	<option value="">Pilih Meeting Room</option>
+							    	@foreach ($meetroom as $key => $value)
+							    		@if (in_array($value->id, $arr_meetroom_id_use))
+							    			@if (old("meetroom_id")==$value->id)
+							    				<option value="{{$value->id}}" style="color:red; font-weight: bold;" selected>{{$value->name}}</option>
+							    			@else
+							    				<option value="{{$value->id}}" style="color:red; font-weight: bold;">{{$value->name}}</option>
+							    			@endif
+							    		@else
+							    			@if (old("meetroom_id")==$value->id)
+							    				<option value="{{$value->id}}" selected>{{$value->name}}</option>
+							    			@else
+							    				<option value="{{$value->id}}">{{$value->name}}</option>
+							    			@endif						    			
+							    		@endif						    		
+							    	@endforeach
+							    </select>							 
 						</div>
 					</div>
 					<button type="submit" class="btn btn-primary">Submit</button>
@@ -97,26 +159,45 @@
 	$(document).ready(function(){			
 		@if (old("profile")=="room_profile")
 			$(".cls_room").show();
+		@elseif (old("profile")=="meeting_profile")
+			$(".cls_meetroom").show();
 		@endif
+
+		$("select[name='room_id']").change(function(){						
+			$(this).css("color:red;font-weight:bold");						
+		});
+
 		$("select[name='profile']").change(function(){
 			if ($(this).val()=="room_profile"){
+				hide();
 				$("input[name='from']").prop("required", true);
 				$("input[name='to']").prop("required",true);
-				$("input[name='room']").prop("required",true);		
+				$("select[name='room_id']").prop("required",true);		
 				$("input[name='day']").prop("required",true);		
 				$(".cls_room").show();
+			}else if ($(this).val()=="meeting_profile"){
+				hide();
+				$("select[name='meetroom_id']").prop("required",true);		
+				$(".cls_meetroom").show();
 			}else{
-				$("input[name='from']").removeProp("required");
-				$("input[name='from']").val("");
-				$("input[name='to']").val("");
-				$("input[name='to']").removeProp("required");
-				$("input[name='room']").val("");
-				$("input[name='room']").removeProp("required");
-				$("input[name='day']").val("");
-				$("input[name='day']").removeProp("required");
-
-				$(".cls_room").hide();
+				hide();
 			}
 		});
 	});
+
+	function hide(){
+		$("input[name='from']").removeProp("required");
+		$("input[name='from']").val("");
+		$("input[name='to']").val("");
+		$("input[name='to']").removeProp("required");
+		$("select[name='room_id']").val("");
+		$("select[name='room_id']").removeProp("required");
+		$("input[name='day']").val("");
+		$("input[name='day']").removeProp("required");
+		$(".cls_room").hide();
+
+		$("select[name='meetroom_id']").val("");
+		$("select[name='meetroom_id']").removeProp("required");
+		$(".cls_meetroom").hide();
+	}
 </script>

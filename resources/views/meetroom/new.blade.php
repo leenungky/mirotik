@@ -31,18 +31,19 @@
 		<br/>
 		<div class="row">				
 			<div class="col-md-12">		
-				<form method="post" action="/room/create" class="formsubmit">
+				<form method="post" action="/meetroom/create" class="formsubmit">
 					<input type="hidden" name="_token" value="{{ csrf_token() }}">									
 					<div class="form-group">
-					    <label for="email">Room Name</label>
-						 <input type="text" class="form-control" id="name" name="name" placeholder="input room name" value="{{ old('name') }}" required>
+					    <label for="email">Meeting room</label>
+						 <input type="text" class="form-control" id="name" name="name" placeholder="input meeting room" value="{{ old('name') }}" required>
 					</div>					
 					<div class="form-group">
 					    <label for="email">Description</label>
 						 <textarea  class="form-control" id="description" name="description" placeholder="input username">{{ old('description') }}</textarea> 
 					</div>					
 					
-					<button type="submit" class="btn">Submit</button>
+					<button type="submit" class="btn btn-primary">Submit</button>
+					<a href="/room/list" class="btn btn-primary">Cancel</a>
 				</form>
 			</div>
 		</div>

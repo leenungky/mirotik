@@ -49,7 +49,7 @@
 					    <label for="email">Role User</label>
 						<select name="role" class="form-control" required>
 							<option>Pilih Role</option>
-							@foreach ($role as $key => $value)
+							@foreach ($roles as $key => $value)
 								<option value="{{$value->id}}">{{$value->name}}</option>
 							@endforeach
 						</select>
@@ -61,8 +61,9 @@
 					<div class="form-group">
 					    <label for="pwd">Password Confirmation:</label>
 					    <input type="password" class="form-control" name="password_confirmation" placeholder="input password" value="{{ old('password_confirmation') }}" required>
-					</div>
-					<button type="submit" class="btn">Submit</button>
+					</div>					
+					<button type="submit" class="btn btn-primary">Submit</button>
+					<a href="/user/list" class="btn btn-primary">Cancel</a>
 				</form>
 			</div>
 		</div>
