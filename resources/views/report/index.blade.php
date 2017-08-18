@@ -76,7 +76,13 @@
 								<td>{{$value->created_at}}</td>
 								<td>{{$value->vupdate}}</td>
 								<td>{{$value->updated_at}}</td>
-								<td>{{$value->vdelete}}</td>
+								<td>
+									@if ($value->deleted_by==-1)
+										System
+									@else
+										{{$value->vdelete}}
+									@endif									
+								</td>
 								<td>{{$value->deleted_at}}</td>								
 							</tr>																							
 						@endforeach

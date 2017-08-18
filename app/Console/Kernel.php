@@ -13,6 +13,7 @@ class Kernel extends ConsoleKernel
      * @var array
      */
     protected $commands = [
+        Commands\Removed::class,
         // Commands\Inspire::class,
     ];
 
@@ -28,7 +29,6 @@ class Kernel extends ConsoleKernel
      */
     protected function schedule(Schedule $schedule)
     {
-        // $schedule->command('inspire')
-        //          ->hourly();
+        $schedule->command('exportparcel')->daily()->sendOutputTo('/home/developer/apiv2/storage/app/debugapp/exportparcel.txt');
     }
 }

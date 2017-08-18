@@ -36,7 +36,7 @@ class CustomerController extends Controller {
 		$this->api->timeout = 30;
 		$this->path = "/ip/hotspot";		
 		// $this->connect = array("host" => "180.250.113.42", "user" => "nungky", "password" => "123");				
-		$this->connect = array("host" => "202.169.46.205", "user" => "nungky", "password" => "cabin888");		
+		$this->connect = array("host" => "202.169.46.205", "user" => "nungky", "password" => "cabin888");
 	} 
 	
 	public function getAdd(){					
