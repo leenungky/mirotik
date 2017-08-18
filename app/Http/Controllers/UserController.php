@@ -23,17 +23,17 @@ class UserController extends Controller {
 		$this->data["role"] =  $req->session()->get("role", ""); 
 	} 
 
-	public function getAdd(){
-		if ($this->data["role"]!="administrator"){
+	public function getAdd(){		
+		if ($this->data["role"]!=config("config.supervisor")){
 			return redirect('/customer/list');
 		}	
 		$req = $this->data["req"];
-		$roles = DB::table("tb_role")->get();						
-		$this->data["roles"] = $roles;
-		return view('user.new', $this->data);  
+		$roles = DB::table("tb_role")->get();				
+		$this->data["roles"] = $roles
+;		return view('user.new', $this->data);  
 	}
 	public function getList(){
-		if ($this->data["role"]!="administrator"){
+		if ($this->data["role"]!=config("config.supervisor")){
 			return redirect('/customer/list');
 		}
 		$req = $this->data["req"];
@@ -45,7 +45,7 @@ class UserController extends Controller {
 	}
 
 	public function getEdit($id){		
-		if ($this->data["role"]!="administrator"){
+		if ($this->data["role"]!=config("config.supervisor")){
 			return redirect('/customer/list');
 		}
 		$req = $this->data["req"];
@@ -58,7 +58,7 @@ class UserController extends Controller {
 	}
 
 	public function getDelete($id){		
-		if ($this->data["role"]!="administrator"){
+		if ($this->data["role"]!=config("config.supervisor")){
 			return redirect('/customer/list');
 		}
 		$req = $this->data["req"];

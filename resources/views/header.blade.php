@@ -23,8 +23,8 @@
           <ul class="dropdown-menu">
             <li><a href="/customer/list">Hostpot</a></li>                          
           </ul>
-        </li>     
-        @if ($role=="administrator")   
+        </li>        
+        @if ($role==config("config.supervisor"))   
         <li class="dropdown">
               <a class="dropdown-toggle" data-toggle="dropdown" href="#">Master Data
               <span class="caret"></span></a>

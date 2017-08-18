@@ -65,7 +65,7 @@ class CustomerController extends Controller {
 	}
 
 	public function getEdit($id){						
-		if ($this->data["role"]!="administrator"){
+		if ($this->data["role"]!=config("config.supervisor")){
 			return redirect('/customer/list');
 		}
 		if ($this->api->connect($this->connect["host"], 
@@ -113,7 +113,7 @@ class CustomerController extends Controller {
 	}
 
 	public function getDelete($id){
-		if ($this->data["role"]!="administrator"){
+		if ($this->data["role"]!=config("config.supervisor")){
 			return redirect('/customer/list');
 		}
 		if ($this->api->connect($this->connect["host"], 
@@ -161,7 +161,7 @@ class CustomerController extends Controller {
 	}
 
 	public function postCreate(){
-		if ($this->data["role"]!="administrator"){
+		if ($this->data["role"]!=config("config.supervisor")){
 			return redirect('/customer/list');
 		}
 		$req = $this->data["req"];        
@@ -227,7 +227,7 @@ class CustomerController extends Controller {
 	}
 
 	public function postUpdate($id){		
-		if ($this->data["role"]!="administrator"){
+		if ($this->data["role"]!=config("config.supervisor")){
 			return redirect('/customer/list');
 		}
 		$req = $this->data["req"];

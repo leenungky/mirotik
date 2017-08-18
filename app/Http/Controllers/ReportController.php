@@ -22,17 +22,20 @@ class ReportController extends Controller {
         if (empty($this->data["role"])) {
             die("You are not user, please login");
         }
-        if ($this->data["role"]!="administrator"){
+        if ($this->data["role"]!="spv"){
             die("");
         }
     }
 
 	public function getList(){  
+        if ($this->data["role"]!=config("config.supervisor")){
+            return redirect('/customer/list');
+        }
 		$req = $this->data["req"];      
         $input= $req->input();     
         $data = $this->_get_index_filter($input);        
         $this->data["input"] = $input;
-        $this->data["report"] = $data->get();
+        $this->data["report"] = $data->paginate(20);
         return view('report.index', $this->data);
     }
 

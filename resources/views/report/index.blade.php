@@ -90,6 +90,16 @@
 				</table>
 			</div>
 		</div>
+		 <div class="row">
+            <div class="col-md-12">   
+            <?php 
+                if (isset($input)){
+                    $report->appends($input);
+                }
+            ?>
+            {!! $report->render() !!}
+            </div>
+	 </div>	    	
 	 </div>	    	
 </div>
 

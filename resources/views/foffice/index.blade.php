@@ -82,7 +82,7 @@
 				</table>
 			</div>
 		</div>
-	 </div>	    	
+		
 </div>
 <div class="row" id="printableArea" style="display: none;">
 		<div class="left" style="width: 140px; font-size: 8px; margin-left: 10px">
