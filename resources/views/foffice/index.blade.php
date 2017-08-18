@@ -84,7 +84,7 @@
 		</div>
 	 </div>	    	
 </div>
-<div class="row" id="printableArea" style="display: none">
+<div class="row" id="printableArea" style="display: none;">
 		<div class="left" style="width: 140px; font-size: 8px; margin-left: 10px">
 			<div><br/>
 				<div style="width: 100px;margin-left: 50px;margin-right: 50px;margin-bottom:20px; ">
@@ -107,7 +107,7 @@
     		<div>    				
     			<img src="{{ URL::asset('img/cabin1.jpg') }}" width="100px">    			
     		</div>
-    		<div style="width: 100px;margin: 10px;">
+    		<div style="width: 120px;">
 			   	<img src="" alt="barcode" id="qrcode" />				   	
 			</div>
     	</div>

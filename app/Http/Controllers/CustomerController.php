@@ -153,7 +153,7 @@ class CustomerController extends Controller {
 		if (empty($code)){
 			$res = "";			
 		}else{					
-			$res = base64_encode(QrCode::format('png')->size(100)->generate($this->domain_qr."?username=".$name."&password=".$code));
+			$res = base64_encode(QrCode::format('png')->size(110)->generate($this->domain_qr."?username=".$name."&password=".$code));
 		}
 		
 		$res = array("response"=>array("code"=>200 , "messsage" => "ok"), "data" => array("name" => $name, "password" =>$code), "qrcode" => $res);

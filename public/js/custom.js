@@ -44,8 +44,8 @@ $( document ).ready(function() {
 		if (type=="address"){
 			$(".origin-address").show();
 			$(".origin-loker").hide();
-		}else if (type=="loker"){
-			$(".origin-address").hide();
+		}else if (type=="loker"){	
+		$(".origin-address").hide();
 			$(".origin-loker").show();
 		}
 	})
