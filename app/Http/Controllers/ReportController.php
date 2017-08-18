@@ -30,21 +30,23 @@ class ReportController extends Controller {
 	public function getList(){  
 		$req = $this->data["req"];      
         $input= $req->input();     
-        $sql = $this->_get_index_filter($input);        
+        $data = $this->_get_index_filter($input);        
         $this->data["input"] = $input;
-        $this->data["report"] = DB::select($sql);
+        $this->data["report"] = $data->get();
         return view('report.index', $this->data);
     }
 
 	private function _get_index_filter($filter){
-        $sql = "SELECT mikrotik.*, room.name as roomname, meetroom.name as meet_room_name, created.email as vcreate, updated.email as vupdate, 
-            deleted.email as vdelete FROM `mikrotik`
-                left join tb_users as created on created.id=mikrotik.created_by
-                left join tb_users as updated on updated.id=mikrotik.updated_by
-                left join tb_users as deleted on deleted.id=mikrotik.deleted_by
-                left join meetroom on meetroom.id=mikrotik.meetroom_id
-                left join room on room.id=mikrotik.room_id";     
-        return $sql." Order By mikrotik.id asc ";
+        $data = DB::table("mikrotik")
+            ->select(DB::raw("mikrotik.*, room.name as roomname, meetroom.name as meet_room_name, created.email as vcreate, updated.email as vupdate, 
+            deleted.email as vdelete"))
+            ->leftJoin(DB::raw("tb_users as created"), "created.id", "=", "mikrotik.created_by")
+            ->leftJoin(DB::raw("tb_users as updated"), "updated.id", "=", "mikrotik.updated_by")
+            ->leftJoin(DB::raw("tb_users as deleted"), "deleted.id", "=", "mikrotik.deleted_by")
+            ->leftJoin("meetroom", "meetroom.id", "=", "mikrotik.meetroom_id")
+            ->leftJoin("room", "room.id", "=", "mikrotik.room_id")
+            ->orderBy("mikrotik.id", "desc");
+        return $data;        
     }
 
 }
