@@ -58,7 +58,7 @@
 								<td>{{isset($value["password"]) ? $value["password"] : ""}}</td>								
 								<td>{{isset($value["profile"]) ? $value["profile"] : ""}}</td>								
 								<td>
-									@if ($role=="administrator")
+									@if ($role==config("config.supervisor"))
 										<a href="/customer/edit/{{$value[".id"]}}">
 											<span class="edit"> 
 						    					<span class="glyphicon glyphicon-pencil"></span>

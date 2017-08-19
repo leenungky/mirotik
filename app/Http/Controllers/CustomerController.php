@@ -84,17 +84,17 @@ class CustomerController extends Controller {
 				$this->data["roomdb"] = DB::table("mikrotik")->where("mikrotik_id", $arr[0][".id"])->first();									
 			}
 			// die();
-			$roomuse = DB::table("mikrotik")->select("room_id")->whereNull("deleted_at")->groupBy("room_id")->get();
+			$roomuse = DB::table("mikrotik")->select("room_id")->whereNotNull("room_id")->whereNull("deleted_at")->groupBy("room_id")->get();
 			$arr_room_id_use = array();
 			foreach ($roomuse as $key => $value) {
 				$arr_room_id_use[] = $value->room_id;
 			}
 
-			$meetroomuse = DB::table("mikrotik")->select("meetroom_id")->whereNull("deleted_at")->groupBy("room_id")->get();
+			$meetroomuse = DB::table("mikrotik")->select("meetroom_id")->whereNotNull("meetroom_id")->whereNull("deleted_at")->groupBy("meetroom_id")->get();			
 			$arr_meetroom_id_use = array();
 			foreach ($meetroomuse as $key => $value) {
 				$arr_meetroom_id_use[] = $value->meetroom_id;
-			} 
+			} 			
 			
 			$room = DB::table("room")->get();
 			$meetroom = DB::table("meetroom")->get();
@@ -263,11 +263,20 @@ class CustomerController extends Controller {
 			$this->api->disconnect(); 		
 			$mikrotikdb = DB::table("mikrotik")->where("mikrotik_id", $id)->first();
 			$arrUpdate = $input;		
-			$arrUpdate["to"] =  date('Y-m-d', strtotime($mikrotikdb->from . ' + '.($input["day"]-1).' days'));
+			$from = date("Y-m-d");
+			if (isset($mikrotikdb->from)){
+				$from = $mikrotikdb->from;
+			}
+			$arrUpdate["to"] =  date('Y-m-d', strtotime($from . ' + '.($input["day"]-1).' days'));
 			$arrUpdate["updated_by"] = \Auth::user()->id;
 			$arrUpdate["updated_at"] = date("Y-m-d h:i:s");
 			unset($arrUpdate["_token"]);  
-			DB::table("mikrotik")->where("mikrotik_id", $id)->update($arrUpdate);
+			if (isset($mikrotikdb)){				
+				DB::table("mikrotik")->where("mikrotik_id", $id)->update($arrUpdate);
+			}else{
+				$arrUpdate["mikrotik_id"] = $id;
+				DB::table("mikrotik")->insert($arrUpdate);
+			}
 		}
 		return redirect('/customer/list')->with('message', "Successfull Update");
 	}
@@ -282,17 +291,20 @@ class CustomerController extends Controller {
 			}
 		}elseif ($action == "edit"){
 			$data = DB::table("mikrotik")->where("mikrotik_id", $id)->whereNull("deleted_at")->first();
-			if ($data->room_id == $input["room_id"]){				
-				return true;
-			}else{				
-				$data = DB::table("mikrotik")->where("room_id", $input["room_id"])->whereNull("deleted_at")->first();
-				if (isset($data)){
-					return false;
-				}else{
+			if (isset($data->room_id)){
+				if ($data->room_id == $input["room_id"]){				
 					return true;
-				}
+				}else{				
+					$data = DB::table("mikrotik")->where("room_id", $input["room_id"])->whereNull("deleted_at")->first();
+					if (isset($data)){
+						return false;
+					}else{
+						return true;
+					}
+				}	
+			}else{
+				return true;
 			}
-			
 		}
 	}
 
@@ -306,15 +318,19 @@ class CustomerController extends Controller {
 			}
 		}elseif ($action == "edit"){			
 			$data = DB::table("mikrotik")->where("mikrotik_id", $id)->whereNull("deleted_at")->first();
-			if ($data->meetroom_id == $input["meetroom_id"]){				
-				return true;
-			}else{				
-				$data = DB::table("mikrotik")->where("meetroom_id", $input["meetroom_id"])->whereNull("deleted_at")->first();
-				if (isset($data)){
-					return false;
-				}else{
+			if (isset($data->meetroom_id)){
+				if ($data->meetroom_id == $input["meetroom_id"]){				
 					return true;
+				}else{				
+					$data = DB::table("mikrotik")->where("meetroom_id", $input["meetroom_id"])->whereNull("deleted_at")->first();
+					if (isset($data)){
+						return false;
+					}else{
+						return true;
+					}
 				}
+			}else{
+				return true;
 			}
 			
 		}

@@ -67,6 +67,7 @@
 						}
 					?>
 					<thead>
+						<th>No</th>
 						<th>Room Name</th>
 			    		<th>Description</th>			    		
 						<th>Action</th>
@@ -74,6 +75,7 @@
 					<tbody>
 						@foreach ($room as $key => $value)
 							<tr>
+								<td>{{$key+1}}</td>
 								<td>{{$value->name}}</td>
 								<td>{{$value->description}}</td>								
 								<td>

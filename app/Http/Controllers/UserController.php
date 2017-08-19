@@ -20,7 +20,7 @@ class UserController extends Controller {
 	public function __construct(Request $req) 
 {		$this->data["type"]= "User"; 
 		$this->data["req"]= $req; 
-		$this->data["role"] =  $req->session()->get("role", ""); 
+		$this->data["role"] =  strtolower($req->session()->get("role", "")); 
 	} 
 
 	public function getAdd(){		
@@ -29,10 +29,10 @@ class UserController extends Controller {
 		}	
 		$req = $this->data["req"];
 		$roles = DB::table("tb_role")->get();				
-		$this->data["roles"] = $roles
-;		return view('user.new', $this->data);  
+		$this->data["roles"] = $roles;
+		return view('user.new', $this->data);  
 	}
-	public function getList(){
+	public function getList(){		
 		if ($this->data["role"]!=config("config.supervisor")){
 			return redirect('/customer/list');
 		}
@@ -334,8 +334,8 @@ class UserController extends Controller {
 		} else {
 			return Redirect::to('user/profile')->with('message', \SiteHelpers::alert('error','The following errors occurred')
 			)->withErrors($validator)->withInput();
-		}	
-	
+		}
+		
 	}	
 	
 	public function getReminder()

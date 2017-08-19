@@ -30,34 +30,5 @@ class BusinessLogic
         }       */
         
     }
-
-    function deleteDirectory($dir) {
-        system('rm -rf ' . escapeshellarg($dir), $retval);
-        return $retval == 0; // UNIX commands return zero on success
-    }
-
-    public function getRedirect($controller, $action, $request){
-        $role =  $request->session()->get("role", ""); 
-        $strRedirect = "";                
-        if ($controller == "UserController"){
-                if ($action == "getLogout" || $action=="getLogin" || $action=="postLogin"){                    
-                }else{
-                    $strRedirect = "/customer/list";    
-                }                
-        } else{                
-             $strRedirect = "/customer/list";    
-        }            
-            
-        if (empty($role)){   
-            if ($controller == "UserController"){
-                if ($action == "getLogout" || $action=="getLogin" || $action=="postLogin"){  
-                    $is_cek_payment = false;
-                }
-            }else{                 
-                $strRedirect = "/user/logout";                                     
-            }
-        }
-        return $strRedirect;
-
-    }
+    
 }

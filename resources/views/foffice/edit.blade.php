@@ -82,49 +82,64 @@
 						    <label for="email">Room</label>
 							  <select name="room_id" class="form-control">
 						    	<option value="">Pilih Room</option>
-						    	@foreach ($room as $key => $value)
-						    		@if (in_array($roomdb->room_id, $arr_room_id_use))
-						    			@if ($roomdb->room_id==$value->id)
-						    				<option value="{{$value->id}}" style="color:red; font-weight: bold;" selected>{{$value->name}}</option>
-						    			@else
-						    				<option value="{{$value->id}}" style="color:red; font-weight: bold;">{{$value->name}}</option>
-						    			@endif
-						    		@else
-						    			@if ($roomdb->room_id==$value->id)
-						    				<option room_id="{{$value->id}}" selected>{{$value->name}}</option>
-						    			@else
-						    				<option value="{{$value->id}}">{{$value->name}}</option>
-						    			@endif
-						    			
-						    		@endif
-						    		
-						    	@endforeach
-						    </select>	
-						</div>						
-						<div class="form-group">
-						    <label for="email">Total Days</label>
-							 <input type="text" class="form-control " id="day" name="day" placeholder="input total day" value="{{$roomdb->day}}">
-						</div>
-					</div>								
-					<div class="cls_meetroom" style="display: none;"> 
-						<div class="form-group">
-							    <label for="email">Meeting Room Name</label>
-								<select name="meetroom_id" class="form-control">
-							    	<option value="">Pilih Meeting Room</option>
-							    	@foreach ($meetroom as $key => $value)
-							    		@if (in_array($value->id, $arr_meetroom_id_use))
-							    			@if ($roomdb->meetroom_id==$value->id)
+						    	@foreach ($room as $key => $value)						    		
+							    	@if (in_array($roomdb->room_id, $arr_room_id_use))
+							    		@if (isset($roomdb->room_id))
+							    			@if ($roomdb->room_id==$value->id)
 							    				<option value="{{$value->id}}" style="color:red; font-weight: bold;" selected>{{$value->name}}</option>
 							    			@else
 							    				<option value="{{$value->id}}" style="color:red; font-weight: bold;">{{$value->name}}</option>
 							    			@endif
 							    		@else
-							    			@if ($roomdb->meetroom_id==$value->id)
-							    				<option value="{{$value->id}}" selected>{{$value->name}}</option>
+							    			<option value="{{$value->id}}" style="color:red; font-weight: bold;">{{$value->name}}</option>
+							    		@endif
+							    	@else
+							    		@if (isset($roomdb->room_id))
+							    			@if ($roomdb->room_id==$value->id)
+							    				<option room_id="{{$value->id}}" selected>{{$value->name}}</option>
 							    			@else
 							    				<option value="{{$value->id}}">{{$value->name}}</option>
-							    			@endif						    			
-							    		@endif						    		
+							    			@endif
+							    		@else
+							    			<option value="{{$value->id}}">{{$value->name}}</option>
+							    		@endif
+							    	@endif
+							    			
+							    	
+						    	@endforeach
+						    </select>	
+						</div>						
+						<div class="form-group">
+						    <label for="email">Total Days</label>
+							 <input type="text" class="form-control " id="day" name="day" placeholder="input total day" value="{{isset($roomdb->day) ? $roomdb->day : ""}}"> </div> 
+						</div>
+					<div class="cls_meetroom" style="display: none;"> 
+						<div class="form-group">
+							    <label for="email">Meeting Room Name</label>
+								<select name="meetroom_id" class="form-control">
+							    	<option value="">Pilih Meeting Room</option>
+							    	@foreach ($meetroom as $key => $value)							    		
+							    		@if (in_array($value->id, $arr_meetroom_id_use))
+							    			@if (isset($roomdb->meetroom_id))
+								    			@if ($roomdb->meetroom_id==$value->id)
+								    				<option value="{{$value->id}}" style="color:red; font-weight: bold;" selected>{{$value->name}}</option>
+								    			@else
+								    				<option value="{{$value->id}}" style="color:red; font-weight: bold;">{{$value->name}}</option>
+								    			@endif
+								    		@else
+								    			<option value="{{$value->id}}" style="color:red; font-weight: bold;">{{$value->name}}</option>
+							    			@endif
+							    		@else
+							    			@if (isset($roomdb->meetroom_id))
+								    			@if ($roomdb->meetroom_id==$value->id)
+								    				<option value="{{$value->id}}" selected>{{$value->name}}</option>
+								    			@else
+								    				<option value="{{$value->id}}">{{$value->name}}</option>
+								    			@endif
+								    		@else
+								    			<option value="{{$value->id}}">{{$value->name}}</option>
+							    			@endif			
+							    		@endif						    									    		
 							    	@endforeach
 							    </select>							 
 						</div>

@@ -34,7 +34,7 @@
 		    </div>
 		@endif 		
 		<div class="row">	
-			<div class="col-md-12">
+			<div class="col-md-12" style="overflow: scroll;width: 98%">
 				<table class="table">
 					<?php 
 						$str_parameter = "";
@@ -48,6 +48,7 @@
 						}
 					?>
 					<thead>
+						<th>No</th>
 						<th>Name</th>
 			    		<th>profile</th>			    		
 						<th>Room</th>
@@ -65,6 +66,7 @@
 					<tbody>
 						@foreach ($report as $key => $value)
 							<tr>
+								<td>{{$key+1}}</td>
 								<td>{{$value->name}}</td>
 								<td>{{$value->profile}}</td>
 								<td>{{$value->roomname}}</td>
