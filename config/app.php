@@ -210,7 +210,7 @@ return [
         'SiteHelpers'   => 'App\Lib\SiteHelpers',
         'PDF' => Barryvdh\DomPDF\Facade::class,
         'SSH' => Collective\Remote\RemoteFacade::class,
-        'QrCode' => SimpleSoftwareIO\QrCode\Facades\QrCode::class,
+         'QrCode' => SimpleSoftwareIO\QrCode\Facades\QrCode::class,
 
     ],
 

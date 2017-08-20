@@ -9,8 +9,7 @@ use App\Http\Helpers\Helpers;
 use Illuminate\Support\Facades\Input;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Facades\Redirect;
-use \URL;
-use \PHPExcel_IOFactory, \PHPExcel_Style_Fill, \PHPExcel_Cell, \PHPExcel_Cell_DataType, \SiteHelpers;
+
 
 class ReportController extends Controller {
     
@@ -39,15 +38,22 @@ class ReportController extends Controller {
         return view('report.index', $this->data);
     }
 
-	private function _get_index_filter($filter){
+    public function getPdf(){
+        $req = $this->data["req"];
+        $input = $req->input();        
+        $data = $this->_get_index_filter();
+        $this->data["report"] = $data->get();
+        $pdf = \PDF::loadView('report.pdf', $this->data)->setPaper('a4', 'landscape')->setWarnings(false);        
+        return $pdf->download('report-'.date("Y-m-d").'.pdf');
+    }
+
+	private function _get_index_filter($filter = null){
         $data = DB::table("mikrotik")
-            ->select(DB::raw("mikrotik.*, room.name as roomname, meetroom.name as meet_room_name, created.email as vcreate, updated.email as vupdate, 
-            deleted.email as vdelete"))
+            ->select(DB::raw("mikrotik.*, room,created.username as vcreate, updated.username as vupdate, 
+            deleted.username as vdelete"))
             ->leftJoin(DB::raw("tb_users as created"), "created.id", "=", "mikrotik.created_by")
             ->leftJoin(DB::raw("tb_users as updated"), "updated.id", "=", "mikrotik.updated_by")
-            ->leftJoin(DB::raw("tb_users as deleted"), "deleted.id", "=", "mikrotik.deleted_by")
-            ->leftJoin("meetroom", "meetroom.id", "=", "mikrotik.meetroom_id")
-            ->leftJoin("room", "room.id", "=", "mikrotik.room_id")
+            ->leftJoin(DB::raw("tb_users as deleted"), "deleted.id", "=", "mikrotik.deleted_by")            
             ->orderBy("mikrotik.id", "desc");
         return $data;        
     }

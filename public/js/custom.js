@@ -14,8 +14,8 @@ $( document ).ready(function() {
 		}else if ($(this).text()=="Undelivery"){
 			location.href="/undelivery";
 		}else if ($(this).text()=="History"){
-			location.href="/history";
-		}else if ($(this).text()=="All Order"){
+			location.href="/history"
+;		}else if ($(this).text()=="All Order"){
 			location.href="/allorder";
 		}		
 	});
@@ -102,8 +102,8 @@ $( document ).ready(function() {
 			$(this).attr('checked', false);			
 			return;
 		}
-		rounded();	
-	})
+		rounded();
+		})
 
 	$("input[name='oweight']").keyup(function(){		
 		var arr_value = $(this).val().split(".");
@@ -806,8 +806,8 @@ function autocomplete(url, idelement){
 	                    $(idelement).val("");
 	                    return false;
 	                }
-	            }
-	        });
+	            
+}	        });
 	} else if (idelement =="#city")  {
 		$(idelement).autocomplete({
 	            source: function( request, response) {            	

@@ -43,14 +43,14 @@
                         </div>
                        <div class="row">                              
                             <div class="col-md-12 alileft label-email">
-                                Email Address<br/>
-                                <input type="text" name="email" class="form-control" id="inputEmail3" placeholder="Email Address">
+                                Username<br/>
+                                <input type="text" name="username" class="form-control" id="inputEmail3" placeholder="Username" required>
                             </div>
                         </div> 
                         <div class="row">                              
                             <div class="col-md-12 alileft label-email">
                                 Password<br/>
-                                <input type="password" name="password" class="form-control" id="inputEmail3" placeholder="Password">
+                                <input type="password" name="password" class="form-control" id="inputEmail3" placeholder="Password" required>
                             </div>
                         </div>                        
                         

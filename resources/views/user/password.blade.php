@@ -31,29 +31,8 @@
 		<br/>
 		<div class="row">				
 			<div class="col-md-12">		
-				<form method="post" action="/user/create" class="formsubmit">
-					<input type="hidden" name="_token" value="{{ csrf_token() }}">									
-					<div class="form-group">
-					    <label for="email">Firstname</label>
-						 <input type="text" class="form-control" id="firstname" name="firstname" placeholder="input username" value="{{ old('firstname') }}" required>
-					</div>					
-					<div class="form-group">
-					    <label for="email">Lastname</label>
-						 <input type="text" class="form-control" id="lastname" name="lastname" placeholder="input username" value="{{ old('lastname') }}" required>
-					</div>					
-					<div class="form-group">
-					    <label for="email">Username</label>
-						 <input type="text" class="form-control" id="username" name="username" placeholder="input username" value="{{ old('username') }}" required>
-					</div>
-					<div class="form-group role-user">
-					    <label for="email">Role User</label>
-						<select name="role" class="form-control" required>
-							<option>Pilih Role</option>
-							@foreach ($roles as $key => $value)
-								<option value="{{$value->id}}">{{$value->name}}</option>
-							@endforeach
-						</select>
-					</div>				
+				<form method="post" action="/user/updatepassword" class="formsubmit">
+					<input type="hidden" name="_token" value="{{ csrf_token() }}">														
 					<div class="form-group">
 					    <label for="pwd">Password:</label>
 					    <input type="password" class="form-control" name="password" placeholder="input password" value="{{ old('password') }}" required>
@@ -62,8 +41,7 @@
 					    <label for="pwd">Password Confirmation:</label>
 					    <input type="password" class="form-control" name="password_confirmation" placeholder="input password" value="{{ old('password_confirmation') }}" required>
 					</div>					
-					<button type="submit" class="btn btn-primary">Submit</button>
-					<a href="/user/list" class="btn btn-primary">Cancel</a>
+					<button type="submit" class="btn btn-primary">Submit</button>					
 				</form>
 			</div>
 		</div>

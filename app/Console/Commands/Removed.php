@@ -50,7 +50,7 @@ class Removed extends Command
                 $connect["user"], 
                 $connect["password"])) {
         
-            $mikrotiks = DB::table("mikrotik")->where("to", "<", date("Y-m-d"))->get();
+            $mikrotiks = DB::table("mikrotik")->where("checkout", "=", date("Y-m-d"))->get();
             foreach ($mikrotiks as $key => $value) {
                 $arrUpdate = array("deleted_at" => date("Y-m-d h:i:s"), "deleted_by"=>-1);
                 DB::table("mikrotik")->where("id", $value->id)->update($arrUpdate);            

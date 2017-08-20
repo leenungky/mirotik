@@ -42,8 +42,8 @@
 						 <input type="text" class="form-control" id="lastname" name="lastname" placeholder="input username" value="{{$user->last_name}}" required>
 					</div>					
 					<div class="form-group">
-					    <label for="email">email</label>
-						 <input type="text" class="form-control" id="email" name="email" placeholder="input email" value="{{$user->email}}" required>
+					    <label for="email">Username</label>
+						 <input type="text" class="form-control" id="email" name="username" placeholder="input username" value="{{$user->username}}" required>
 					</div>
 					<div class="form-group">
 					    <label for="email">Role User</label>

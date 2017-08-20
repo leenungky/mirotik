@@ -12,7 +12,7 @@
 		];		
 	}else{
 		 $data = [			
-			'url' => "http://express.dev",
+			'url' => "http://localhost",
 			"supervisor" => "spv"
 		];
 		

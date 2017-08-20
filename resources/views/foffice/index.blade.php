@@ -44,34 +44,32 @@
 				<table class="table">					
 					<thead>
 						<th>No</th>
-						<th>Username</th>
-						<th>Password</th>
-						<th>Profile</th>
+						<th>Nama Tamu</th>
+						<th>No Kamar</th>						
 						<th>Action</th>
 					</thead>
 					<tbody>
-						@if (isset($usermkr))
-						@foreach ($usermkr as $key => $value)
+						@if (isset($show))
+						@foreach ($show as $key => $value)
 							<tr>
 								<td>{{($key+1)}}</td>
-								<td>{{$value["name"]}}</td>								
-								<td>{{isset($value["password"]) ? $value["password"] : ""}}</td>								
-								<td>{{isset($value["profile"]) ? $value["profile"] : ""}}</td>								
+								<td>{{$value[1]}}</td>								
+								<td>{{$value[2]}}</td>						
 								<td>
 									@if ($role==config("config.supervisor"))
-										<a href="/customer/edit/{{$value[".id"]}}">
+										<a href="/customer/edit/{{$value[0]}}">
 											<span class="edit"> 
 						    					<span class="glyphicon glyphicon-pencil"></span>
 						    				</span>
 					    				</a> | 
-					    				<a href="/customer/delete/{{$value[".id"]}}" class="confirmation">
+					    				<a href="/customer/delete/{{$value[0]}}" class="confirmation">
 						    				<span class="delete">
 					    						<span class="glyphicon glyphicon-remove"></span>
 					    					</span> 
 				    					</a>
 				    					| 			    					
 			    					@endif
-			    					<a href="javascript:void(0)" class="print" val="{{$value[".id"]}}" val-name="{{$value["name"]}}" val-password="{{isset($value["password"]) ? $value["password"] : ""}}">
+			    					<a href="javascript:void(0)" class="print" val="{{$value[0]}}" val-name="{{$value[1]}}" val-password="{{$value[3]}}">
 			    						 <span class="glyphicon glyphicon-print"></span> 
 			    					</a>
 								</td>
@@ -108,7 +106,7 @@
     			<img src="{{ URL::asset('img/cabin1.jpg') }}" width="100px">    			
     		</div>
     		<div style="width: 120px;">
-			   	<img src="" alt="barcode" id="qrcode" />				   	
+			   	<img src="" alt="" id="qrcode" />				   	
 			</div>
     	</div>
     	<div style="clear: both;"></div>    		    	

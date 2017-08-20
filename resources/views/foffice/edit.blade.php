@@ -34,116 +34,19 @@
 				<form method="post" action="/customer/update/{{$usermkr[".id"]}}" class="formsubmit">
 					<input type="hidden" name="_token" value="{{ csrf_token() }}">					
 					<div class="form-group">
-					    <label for="email">Username</label>
+					    <label for="email">Nama Tamu</label>
 						 <input type="text" class="form-control" id="name" name="name" placeholder="input name" value="{{$usermkr["name"]}}" required>
 					</div>		
-					<div class="form-group">
-					    <label for="email">Password</label>
-						 <input type="text" class="form-control" id="password" name="password" placeholder="input password" value="{{ $usermkr["password"] }}" required>
-					</div>								
-					<div class="form-group">
-					    <label for="email">Profile</label>
-						 <select name="profile" class="form-control">
-						 	@if ($role=="administrator")							 	
-						 		@if ($usermkr["profile"]=="room_profile")
-								 	<option selected>room_profile</option>
-							 	@else
-							 		 <option>room_profile</option>
-							 	@endif
-
-							 	@if ($usermkr["profile"]=="management_profile")
-								 	<option selected>management_profile</option>
-							 	@else
-							 		 <option>management_profile</option>
-							 	@endif
-
-							 	@if ($usermkr["profile"]=="meeting_profile")								 	
-								 	<option selected>meeting_profile</option>
-							 	@else
-							 		 <option>meeting_profile</option>
-							 	@endif
-							@else
-								@if ($usermkr["profile"]=="room_profile")
-								 	<option selected>room_profile</option>
-							 	@else
-							 		 <option>room_profile</option>
-							 	@endif
-							 	@if ($usermkr["profile"]=="meeting_profile")								 	
-								 	<option selected>meeting_profile</option>
-							 	@else
-							 		 <option>meeting_profile</option>
-							 	@endif
-						 	@endif 
-						 </select>
-					</div>		
-					<div class="cls_room" style="display: none;">
-						
+					
 						<div class="form-group">
 						    <label for="email">Room</label>
-							  <select name="room_id" class="form-control">
-						    	<option value="">Pilih Room</option>
-						    	@foreach ($room as $key => $value)						    		
-							    	@if (in_array($roomdb->room_id, $arr_room_id_use))
-							    		@if (isset($roomdb->room_id))
-							    			@if ($roomdb->room_id==$value->id)
-							    				<option value="{{$value->id}}" style="color:red; font-weight: bold;" selected>{{$value->name}}</option>
-							    			@else
-							    				<option value="{{$value->id}}" style="color:red; font-weight: bold;">{{$value->name}}</option>
-							    			@endif
-							    		@else
-							    			<option value="{{$value->id}}" style="color:red; font-weight: bold;">{{$value->name}}</option>
-							    		@endif
-							    	@else
-							    		@if (isset($roomdb->room_id))
-							    			@if ($roomdb->room_id==$value->id)
-							    				<option room_id="{{$value->id}}" selected>{{$value->name}}</option>
-							    			@else
-							    				<option value="{{$value->id}}">{{$value->name}}</option>
-							    			@endif
-							    		@else
-							    			<option value="{{$value->id}}">{{$value->name}}</option>
-							    		@endif
-							    	@endif
-							    			
-							    	
-						    	@endforeach
-						    </select>	
+							<input type="text" class="form-control" id="room" name="room" placeholder="input room" value="{{isset($mikrotik->room) ? $mikrotik->room : ""}}" required>
 						</div>						
 						<div class="form-group">
-						    <label for="email">Total Days</label>
-							 <input type="text" class="form-control " id="day" name="day" placeholder="input total day" value="{{isset($roomdb->day) ? $roomdb->day : ""}}"> </div> 
+						    <label for="email">Tanggal Checkout</label>
+							<input type="text" class="form-control datepicker" id="checkout" name="checkout" placeholder="input checkout" value="{{isset($mikrotik->checkout) ? $mikrotik->checkout : ""}}" required>
 						</div>
-					<div class="cls_meetroom" style="display: none;"> 
-						<div class="form-group">
-							    <label for="email">Meeting Room Name</label>
-								<select name="meetroom_id" class="form-control">
-							    	<option value="">Pilih Meeting Room</option>
-							    	@foreach ($meetroom as $key => $value)							    		
-							    		@if (in_array($value->id, $arr_meetroom_id_use))
-							    			@if (isset($roomdb->meetroom_id))
-								    			@if ($roomdb->meetroom_id==$value->id)
-								    				<option value="{{$value->id}}" style="color:red; font-weight: bold;" selected>{{$value->name}}</option>
-								    			@else
-								    				<option value="{{$value->id}}" style="color:red; font-weight: bold;">{{$value->name}}</option>
-								    			@endif
-								    		@else
-								    			<option value="{{$value->id}}" style="color:red; font-weight: bold;">{{$value->name}}</option>
-							    			@endif
-							    		@else
-							    			@if (isset($roomdb->meetroom_id))
-								    			@if ($roomdb->meetroom_id==$value->id)
-								    				<option value="{{$value->id}}" selected>{{$value->name}}</option>
-								    			@else
-								    				<option value="{{$value->id}}">{{$value->name}}</option>
-								    			@endif
-								    		@else
-								    			<option value="{{$value->id}}">{{$value->name}}</option>
-							    			@endif			
-							    		@endif						    									    		
-							    	@endforeach
-							    </select>							 
-						</div>
-					</div>
+					
 					<button type="submit" class="btn btn-primary">Submit</button>
 					<a href="/customer/list" class="btn btn-primary">Cancel</a>
 				</form>
@@ -156,43 +59,23 @@
 </html>
 
 <script type="text/javascript">
-	$(document).ready(function(){			
-		@if ($usermkr["profile"]=="room_profile")
-			$(".cls_room").show();
-		@elseif ($usermkr["profile"]=="meeting_profile")
-			$(".cls_meetroom").show();
-		@endif
-		$("select[name='profile']").change(function(){
-			if ($(this).val()=="room_profile"){
-				hide();
-				$("input[name='from']").prop("required", true);
-				$("input[name='to']").prop("required",true);
-				$("input[name='room']").prop("required",true);		
-				$("input[name='day']").prop("required",true);		
-				$(".cls_room").show();
-			}else if ($(this).val()=="meeting_profile"){
-				hide();
-				$("select[name='meetroom_id']").prop("required",true);		
-				$(".cls_meetroom").show();
-			}else{
-				hide();
-			}
-		});
+	$(document).ready(function(){
+		 var availableTags = [
+		      @foreach ($room as $key => $value)
+		      	"{{$value->name}}",
+		      @endforeach
+		    ];
+		    $( "#room" ).autocomplete({
+		      source: availableTags,
+		      minLength: 2,
+		      change: function(event,ui){
+		      	console.log(ui);
+		    	if (ui.item == null){                    
+		        	$(this).val("");
+		            return false;
+		        }
+		    }
+		    });
 	});
-
-	function hide(){
-		$("input[name='from']").removeProp("required");
-		$("input[name='from']").val("");
-		$("input[name='to']").val("");
-		$("input[name='to']").removeProp("required");
-		$("select[name='room_id']").val("");
-		$("select[name='room_id']").removeProp("required");
-		$("input[name='day']").val("");
-		$("input[name='day']").removeProp("required");
-		$(".cls_room").hide();
-
-		$("select[name='meetroom_id']").val("");
-		$("select[name='meetroom_id']").removeProp("required");
-		$(".cls_meetroom").hide();
-	}
+	
 </script>

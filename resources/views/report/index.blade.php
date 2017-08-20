@@ -33,6 +33,11 @@
 			    </div>
 		    </div>
 		@endif 		
+		<div class="row">				
+			<div class="col-md-12">
+				<a href="/report/pdf" class="btn btn-primary">Export to PDF</a>
+			</div>
+		</div>
 		<div class="row">	
 			<div class="col-md-12" style="overflow: scroll;width: 98%">
 				<table class="table">
@@ -49,13 +54,10 @@
 					?>
 					<thead>
 						<th>No</th>
-						<th>Name</th>
-			    		<th>profile</th>			    		
-						<th>Room</th>
-						<th>Meeting Room</th>
-						<th>from</th>
-						<th>to</th>
-						<th>day</th>
+						<th>Name</th>			    				
+						<th>Room</th>						
+						<th>Checkin</th>
+						<th>Checkout</th>						
 						<th>created_by</th>
 						<th>created_at</th>
 						<th>update_by</th>
@@ -67,13 +69,10 @@
 						@foreach ($report as $key => $value)
 							<tr>
 								<td>{{$key+1}}</td>
-								<td>{{$value->name}}</td>
-								<td>{{$value->profile}}</td>
-								<td>{{$value->roomname}}</td>
-								<td>{{$value->meet_room_name}}</td>
-								<td>{{$value->from}}</td>
-								<td>{{$value->to}}</td>
-								<td>{{$value->day}}</td>
+								<td>{{$value->name}}</td>								
+								<td>{{$value->room}}</td>								
+								<td>{{$value->checkin}}</td>
+								<td>{{$value->checkout}}</td>
 								<td>{{$value->vcreate}}</td>
 								<td>{{$value->created_at}}</td>
 								<td>{{$value->vupdate}}</td>

@@ -69,31 +69,53 @@
 					<thead>
 						<th>No</th>
 						<th>Room Name</th>
-			    		<th>Description</th>			    		
+			    		<th>Description</th>			    					    		
 						<th>Action</th>
+						@if ($role==config("config.supevisor"))
+							<th>Lock</th>
+				    		<th>Hidden</th>
+			    		@endif
 					</thead>
 					<tbody>
 						@foreach ($room as $key => $value)
-							<tr>
+							<tr>								
 								<td>{{$key+1}}</td>
 								<td>{{$value->name}}</td>
 								<td>{{$value->description}}</td>								
 								<td>
-									<a href="/room/edit/{{$value->id}}">
-										<span class="edit"> 
-					    					<span class="glyphicon glyphicon-pencil"></span>
-					    				</span>
-				    				</a> | 
-				    				<a href="/room/delete/{{$value->id}}" class="confirmation">
-					    				<span class="delete">
-				    						<span class="glyphicon glyphicon-remove"></span>
-				    					</span> 
-			    					</a> |
-			    					<a href="javascript:void(0)" class="print" val="{{$value->id}}" val-name="{{$value->id}}" val-password="{{$value->id}}">
+									<a href="javascript:void(0)" class="print" val="{{$value->id}}" val-name="{{$value->id}}" val-password="{{$value->id}}">
 			    						 <span class="glyphicon glyphicon-print"></span> 
 			    					</a>
-
+									@if ($role==config("config.supervisor") || $value->islock==0)
+										| <a href="/room/edit/{{$value->id}}">
+											<span class="edit"> 
+						    					<span class="glyphicon glyphicon-pencil"></span>
+						    				</span>
+					    				</a> | 
+					    				<a href="/room/delete/{{$value->id}}" class="confirmation">
+						    				<span class="delete">
+					    						<span class="glyphicon glyphicon-remove"></span>
+					    					</span> 
+				    					</a>									
+									@endif			    					
 								</td>
+								@if ($role==config("config.supevisor"))
+									<td>
+										@if ($value->islock==1)
+											<input type="checkbox" class="lock" attr-val="{{$value->id}}" checked>
+										@else
+											<input type="checkbox" class="lock" attr-val="{{$value->id}}">
+										@endif
+									</td>
+									<td>
+										@if ($value->ishidden==1)
+											<input type="checkbox" class="hiden" attr-val="{{$value->id}}" checked>
+										@else
+											<input type="checkbox" class="hiden" attr-val="{{$value->id}}">
+										@endif
+										
+									</td>
+								@endif
 							</tr>																							
 						@endforeach
 					</tbody>
@@ -147,34 +169,71 @@
 </body>
 </html>
 
-<!-- <script type="text/javascript">	
+ <script type="text/javascript">	
 	
-   
-	$('.print').click(function(e) { // catch the form's submit event		
-		var name = $(this).attr("val-name");
-		var password = $(this).attr("val-password");
-		var url = "/customer/print?name="+ name +"&password=" + password; // the script where you handle the form input.		
-	    $.ajax({
-	           type: "GET",
-	           url: url,
-	           data: $(this).serialize(), // serializes the form's elements.
-	           success: function(result){
-	           		if (result.response.code=="200"){
-	           			console.log(result);
-	           			$(".spancode").text("");
-	           			if (result.qrcode!=""){
-	           				$("#qrcode").attr("src","data:image/png;base64," + result.qrcode);					           			
-	           			}	           			
-	           			$(".val-name").text(result.data.name);
-	           			$(".val-password").text(result.data.password);
-						
-	           			setTimeout(function(){
-						  printDivIcon('printableArea');
-						}, 1000);
-	           		}
-	           }
-	        });		
-		return false;	    
-	});
+   $(document).ready(function(){
+   		$(".lock").click(function(){
+   			if ($(this).is(':checked')){	
+   				var id = $(this).attr("attr-val");
+   				var url = domain + "/room/lock?id=" + id + "&islock=1";				
+				setData(url);
+   			}else{
+   				var id = $(this).attr("attr-val");
+   				var url = domain + "/room/lock?id=" + id + "&islock=0";				
+				setData(url);
+   			}
+   		});
 
-</script> -->
+   		$(".hiden").click(function(){
+   			if ($(this).is(':checked')){	
+   				var id = $(this).attr("attr-val");
+   				var url = domain + "/room/hidden?id=" + id + "&ishidden=1";				
+				setData(url);
+   			}else{
+   				var id = $(this).attr("attr-val");
+   				var url = domain + "/room/hidden?id=" + id + "&ishidden=0";				
+				setData(url);
+   			}
+   		})
+   });
+
+   function setData(url){
+   		$.ajax({
+			url: url,
+			dataType: 'json',
+			success: function(result) {			  	
+			   	console.log(result.response.code);					   	
+			   	if (result.response.code != 200){		   		
+			   		$(this).attr('checked', false);			
+				}
+			}
+		})
+   }
+	// $('.print').click(function(e) { // catch the form's submit event		
+	// 	var name = $(this).attr("val-name");
+	// 	var password = $(this).attr("val-password");
+	// 	var url = "/customer/print?name="+ name +"&password=" + password; // the script where you handle the form input.		
+	//     $.ajax({
+	//            type: "GET",
+	//            url: url,
+	//            data: $(this).serialize(), // serializes the form's elements.
+	//            success: function(result){
+	//            		if (result.response.code=="200"){
+	//            			console.log(result);
+	//            			$(".spancode").text("");
+	//            			if (result.qrcode!=""){
+	//            				$("#qrcode").attr("src","data:image/png;base64," + result.qrcode);					           			
+	//            			}	           			
+	//            			$(".val-name").text(result.data.name);
+	//            			$(".val-password").text(result.data.password);
+						
+	//            			setTimeout(function(){
+	// 					  printDivIcon('printableArea');
+	// 					}, 1000);
+	//            		}
+	//            }
+	//         });		
+	// 	return false;	    
+	// });
+
+</script> 

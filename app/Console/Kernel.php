@@ -14,6 +14,7 @@ class Kernel extends ConsoleKernel
      */
     protected $commands = [
         Commands\Removed::class,
+        Commands\Testing::class,
         // Commands\Inspire::class,
     ];
 
@@ -29,6 +30,7 @@ class Kernel extends ConsoleKernel
      */
     protected function schedule(Schedule $schedule)
     {
-        $schedule->command('exportparcel')->daily()->sendOutputTo('/home/developer/apiv2/storage/app/debugapp/exportparcel.txt');
+        $schedule->command('Removed')->dailyAt('17:00')->sendOutputTo('/home/cabin/log/remove.txt');
+        //$schedule->command('Testing')->everyMinute()->sendOutputTo('/home/cabin/log/test.txt');
     }
 }

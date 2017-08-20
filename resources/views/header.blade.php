@@ -50,9 +50,11 @@
     </ul>
       
       <ul class="nav navbar-nav navbar-right">
-        <li class="dropdown"><a class="dropdown-toggle" data-toggle="dropdown" href="#"> {{\Auth::user()->first_name}} {{\Auth::user()->lasts_name}} <img src="{{URL::asset('img/user.png')}}" class="user" /><span  class="glyphicon glyphicon-log-in"></span></a>
+        <li class="dropdown"><a class="dropdown-toggle" data-toggle="dropdown" href="#"> {{\Auth::user()->username}}<img src="{{URL::asset('img/user.png')}}" class="user" /><span  class="glyphicon glyphicon-log-in"></span></a>
             <ul class="dropdown-menu">
-            <li><a href="/user/logout">logout</a></li>            
+            <li><a href="/user/password">Change Password</a></li>                 
+            <li role="separator" class="divider"></li>                    
+            <li><a href="/user/logout">logout</a></li>             
         </ul>          
         </li>
       </ul>

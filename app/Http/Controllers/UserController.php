@@ -17,8 +17,8 @@ class UserController extends Controller {
 	
 	protected $layout = "layouts.main";
 
-	public function __construct(Request $req) 
-{		$this->data["type"]= "User"; 
+	public function __construct(Request $req) {		
+		$this->data["type"]= "User"; 
 		$this->data["req"]= $req; 
 		$this->data["role"] =  strtolower($req->session()->get("role", "")); 
 	} 
@@ -66,12 +66,18 @@ class UserController extends Controller {
 		return redirect('/user/list')->with('message', "Successfull delete");
 	}
 
+	public function getPassword(){	
+		$this->data["type"]= "change_password"; 
+		return view('user.password', $this->data);  
+	}
+
 	public function postUpdate($id){	
 		$req = $this->data["req"];
 		$rules = array(
 			'firstname'=>'required|alpha_num|min:2',
 			'lastname'=>'required|alpha_num|min:2',			
-			'role' => 'required'			
+			'role' => 'required',
+			'username' => 'required',	
 			);	
 		
 		
@@ -82,15 +88,24 @@ class UserController extends Controller {
 
 		$validator = Validator::make($req->all(), $rules);
 
-        if ($validator->fails()) {            
+        if ($validator->fails())  {           
             return Redirect::to(URL::previous())->withInput(Input::all())->withErrors($validator);            
         }
 
-        $input = $req->input();        			
+        $input = $req->input();            
+        $user = DB::table("tb_users")->where("id", $id)->first();
+        if ($user->username!=$input["username"]){
+        	$user = DB::table("tb_users")->where("username", $input["username"])->first();
+        	if (isset($user)){
+        		return Redirect::to(URL::previous())->withInput(Input::all())->withErrors("username ".$input["username"]." ini sudah digunakan");            		
+        	}
+        }
+            			
 		$arrUpdate = array(
 			"first_name" => $input["firstname"],
 			"last_name" => $input["lastname"],
-			"role_id" => $input["role"]
+			"role_id" => $input["role"],
+			"username" => $input["username"],
 			);        
 		if (!empty($input["password"])){
 			$arrUpdate["password"] = \Hash::make($input["password"]);
@@ -98,6 +113,28 @@ class UserController extends Controller {
         DB::table("tb_users")->where("id", $id)->update($arrUpdate);        
 		return redirect('/user/list')->with('message', "Successfull delete");
 	}
+
+	public function postUpdatepassword(){	
+		$req = $this->data["req"];
+		$rules = array(
+			"password" => "required|between:6,12|confirmed",
+			"password_confirmation" => "required|between:6,12"
+		);
+
+		$validator = Validator::make($req->all(), $rules);
+
+        if ($validator->fails())  {           
+            return Redirect::to(URL::previous())->withInput(Input::all())->withErrors($validator);            
+        }
+
+        $input = $req->input();                    
+            			
+		$arrUpdate["password"] = \Hash::make($input["password"]);
+		
+        DB::table("tb_users")->where("id", \Auth::user()->id)->update($arrUpdate);        
+		return Redirect::to(URL::previous())->withInput(Input::all())->withErrors("Password berhasil dibuat");
+	}
+
 
 	// public function postCreated(Request $req){
 	// 	print_r($req->input());
@@ -117,15 +154,12 @@ class UserController extends Controller {
 
 		$rules = array(
 			'firstname'=>'required|alpha_num|min:2',
-			'lastname'=>'required|alpha_num|min:2',
-			'email'=>'required|email|unique:tb_users',
+			'lastname'=>'required|alpha_num|min:2'
+,			'username'=>'required|unique:tb_users',
 			'role' => 'required',
 			'password'=>'required|between:6,12|confirmed',
 			'password_confirmation'=>'required|between:6,12'
 			);	
-		if ($request->input("role")=="3"){
-			$rules["agent"] = "required";
-		}
 
 		$validator = Validator::make($request->all(), $rules);
 
@@ -136,7 +170,7 @@ class UserController extends Controller {
 		$authen->first_name = $request->input('firstname');
 		$authen->last_name = $request->input('lastname');
 		$authen->role_id = $request->input('role');
-		$authen->email = trim($request->input('email'));			
+		$authen->username = trim($request->input('username'));			
 		$authen->password = \Hash::make($request->input('password'));
 		$authen->save();
 		return Redirect::to('user/list')->with('message',\SiteHelpers::alert('success',"Successfull created"));
@@ -174,7 +208,7 @@ class UserController extends Controller {
 	public function postSignin() {
 		$request = $this->data["req"];
 		$rules = array(
-			'email'=>'required|email',
+			'username'=>'required',
 			'password'=>'required',
 		);		
 		
@@ -182,15 +216,15 @@ class UserController extends Controller {
 		if ($validator->passes()) {				
 
 			$remember = (!is_null($request->get('remember')) ? 'true' : 'false' );				
-			if (\Auth::attempt(array('email'=>$request->input('email'), 'password'=> $request->input('password') ), $remember )) {	
+			if (\Auth::attempt(array('username'=>$request->input('username'), 'password'=> $request->input('password') ), $remember )) {	
 
 				if(\Auth::check())	
 				{	
 
 					$row = User::find(\Auth::user()->id); 
 
-					if($row->active =='0')
-					{
+					if($row->active =='0')	
+				{
 						// inactive 
 						if($request->ajax() == true )
 						{
@@ -216,7 +250,7 @@ class UserController extends Controller {
 						\DB::table('tb_users')->where('id', '=',$row->id )->update(array('last_login' => date("Y-m-d H:i:s")));
 						\Session::put('uid', $row->id);
 						\Session::put('gid', $row->group_id);
-						\Session::put('eid', $row->email);
+						\Session::put('uname', $row->username);
 						\Session::put('ll', $row->last_login);
 						\Session::put('fid', $row->first_name.' '. $row->last_name);		
 						$role = DB::table("tb_role")->where("id", $row->role_id)->first();
@@ -506,10 +540,10 @@ class UserController extends Controller {
 	//================= batas
 	private function _get_index_filter($filter){
         $dbuser = DB::table("tb_users")
-        ->select("tb_users.id", "tb_users.first_name", "tb_users.last_name", "tb_users.email", "tb_role.name as role")
+        ->select("tb_users.id", "tb_users.first_name", "tb_users.last_name", "tb_users.username", "tb_role.name as role")
         ->join("tb_role", "tb_role.id", "=", "tb_users.role_id", "left");        
-        if (isset($filter["email"])){
-            $dbuser = $dbuser->where("email", "like", "%".$filter["email"]."%");
+        if (isset($filter["username"])){
+            $dbuser = $dbuser->where("username", "like", "%".$filter["username"]."%");
         }        
         return $dbuser;
     }

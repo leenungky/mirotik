@@ -38,16 +38,54 @@ class RoomController extends Controller {
 	}
 
     public function getDelete($id){       
+        $room = DB::table("room")->where("id", $id)->first();    
+        if ($this->data["role"]!=config("config.supevisor")){
+            if ($room->islock==1 || $room->ishidden==1){
+                die("");
+            }
+        }   
         $room = DB::table("room")->where("id", $id)->delete();       
         return redirect('/room/list')->with('message', "Successfull delete");
     }
 
     
 	public function getEdit($id){
-		$room = DB::table("room")->where("id", $id)->first();       
+        $room = DB::table("room")->where("id", $id)->first();       
+        if ($this->data["role"]!=config("config.supevisor")){
+            if ($room->islock==1 || $room->ishidden==1){
+                die("");
+            }
+        }		
 		$this->data["room"] = $room;
 		return view('room.edit', $this->data);  
 	}
+
+    public function getLock(){
+        if ($this->data["role"]!=config("config.supervisor")){
+            die("a");
+        }
+        $req = $this->data["req"];
+        $input = $req->input();
+        $id = $input["id"];
+        $islock = $input["islock"];
+        DB::table("room")->where("id", $id)->update(array("islock" =>$islock ));        
+        $res = array("response"=>array("code"=>200 , "messsage" => "ok"), "data" => array());
+        return response()->json($res);
+    }
+
+
+    public function getHidden(){
+        if ($this->data["role"]!=config("config.supervisor")){
+            die("a");
+        }
+        $req = $this->data["req"];
+        $input = $req->input();
+        $id = $input["id"];
+        $ishidden = $input["ishidden"];
+        DB::table("room")->where("id", $id)->update(array("ishidden" =>$ishidden ));        
+        $res = array("response"=>array("code"=>200 , "messsage" => "ok"), "data" => array());
+        return response()->json($res);
+    }
 
 	public function postCreate(){	
 		$req = $this->data["req"];
@@ -104,7 +142,13 @@ class RoomController extends Controller {
     }
 
 	private function _get_index_filter($filter){
-        $dbcust = DB::table("room");
+        if ($this->data["role"]==config("config.supevisor")){
+            $dbcust = DB::table("room");
+        }else{
+            $dbcust = DB::table("room")->where("ishidden", "0");
+        }
+        
+        
         if (isset($filter["name"])){
             $dbcust = $dbcust->where("name", "like", "%".$filter["name"]."%");
         }        
