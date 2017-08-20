@@ -64,6 +64,9 @@
 		      @foreach ($room as $key => $value)
 		      	"{{$value->name}}",
 		      @endforeach
+		      @foreach ($meetroom as $key => $value)
+		      	"{{$value->name}}",
+		      @endforeach
 		    ];
 		    $( "#room" ).autocomplete({
 		      source: availableTags,

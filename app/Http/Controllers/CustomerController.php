@@ -75,7 +75,9 @@ class CustomerController extends Controller {
 			}
 
 			$room = DB::table("room")->get();
+			$meetroom = DB::table("meetroom")->get();
 			$this->data["room"] = $room;
+			$this->data["meetroom"] = $meetroom;
 			return view('foffice.edit', $this->data);
 		}		
 		
@@ -180,10 +182,14 @@ class CustomerController extends Controller {
 				$this->connect["user"], 
 				$this->connect["password"])) {
 			$password = SiteHelpers::generateRandomString();
-			$room = DB::table("room")->where("name", $input["room"])->first();
-			$profile = "meeting_profile";
+			$room = DB::table("room")->where("name", $input["room"])->first();			
 			if (isset($room)){
 				$profile = "room_profile";
+			}else{
+				$meetroom = DB::table("meetroom")->where("name", $input["room"])->first();			
+				if (isset($meetroom)){
+					$profile = $meetroom->profile;	
+				}
 			}
 			
 			$response=$this->api->comm($this->path."/user/add",Array( 				
@@ -280,11 +286,17 @@ class CustomerController extends Controller {
 				$this->connect["user"], 
 				$this->connect["password"])) {
 			$password = SiteHelpers::generateRandomString();
-			$room = DB::table("room")->where("name", $input["room"])->first();
-			$profile = "meeting_profile";
+			$room = DB::table("room")->where("name", $input["room"])->first();			
+			$profile = "";
 			if (isset($room)){
 				$profile = "room_profile";	
-			}	
+			}else{
+				$meetroom = DB::table("meetroom")->where("name", $input["room"])->first();			
+				if (isset($meetroom)){
+					$profile = $meetroom->profile;	
+				}
+				
+			}
 
 			$response = $this->api->comm($this->path."/user/set",array(
 			    ".id"               => $id,
