@@ -18,13 +18,13 @@ class RoomController extends Controller {
     public function __construct(Request $req){
     	$this->data["type"]= "master_room";    	
     	$this->data["req"]= $req;    	
-        $this->data["role"] = strtolower($req->session()->get("role", ""));     
+        $this->data["role"] = strtolower($req->session()->get("role", ""));             
         if (empty($this->data["role"])) {
             die("You are not user, please login");
         }
     }
 
-	public function getList(){  
+	public function getList(){          
 		$req = $this->data["req"];      
         $input= $req->input();     
         $dbRoom = $this->_get_index_filter($input);        

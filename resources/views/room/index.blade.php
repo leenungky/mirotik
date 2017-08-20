@@ -71,7 +71,7 @@
 						<th>Room Name</th>
 			    		<th>Description</th>			    					    		
 						<th>Action</th>
-						@if ($role==config("config.supevisor"))
+						@if ($role==config("config.supervisor"))
 							<th>Lock</th>
 				    		<th>Hidden</th>
 			    		@endif
@@ -96,7 +96,7 @@
 				    					</a>									
 									@endif			    					
 								</td>
-								@if ($role==config("config.supevisor"))
+								@if ($role==config("config.supervisor"))
 									<td>
 										@if ($value->islock==1)
 											<input type="checkbox" class="lock" attr-val="{{$value->id}}" checked>
