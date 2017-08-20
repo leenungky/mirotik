@@ -21,32 +21,26 @@
           <a class="dropdown-toggle" data-toggle="dropdown" href="#">IP
           <span class="caret"></span></a>
           <ul class="dropdown-menu">
-            <li><a href="/customer/list">Hostpot</a></li>                          
+            <li><a href="/customer/list">Hostpot</a></li>                  
           </ul>
         </li>        
-        @if ($role==config("config.supervisor"))   
+        
         <li class="dropdown">
               <a class="dropdown-toggle" data-toggle="dropdown" href="#">Master Data
               <span class="caret"></span></a>
               <ul class="dropdown-menu">                  
+                @if ($role==config("config.supervisor"))   
                     <li><a href="/user/list">User</a></li>                                              
-                    <li role="separator" class="divider"></li>  
-                  
-                    <li><a href="/room/list">Room</a></li>      
-                    <li role="separator" class="divider"></li>                    
-                    <li><a href="/meetroom/list">Meeting Room</a></li>      
-                    <!--<li role="separator" class="divider"></li>
-                    <li class="dropdown-submenu">
-                        <a tabindex="-1" href="#">Item 2<i class="glyphicon glyphicon-chevron-right"></i></a>
-                        <ul class="dropdown-menu">
-                            <li><a href="/payroll/list">Item 2 1</a></li>
-                            <li role="separator" class="divider"></li>                                             
-                        </ul>
-                    </li>  -->  
+                    <li role="separator" class="divider"></li>                      
+                @endif  
+                <li><a href="/room/list">Room</a></li>      
+                <li role="separator" class="divider"></li>                    
+                <li><a href="/meetroom/list">Meeting Room</a></li>                    
               </ul>
             </li>        
-          <li><a href="/report/list">Report</a></li>     
-          @endif
+          @if ($role==config("config.supervisor"))   
+            <li><a href="/report/list">Report</a></li>   
+          @endif            
     </ul>
       
       <ul class="nav navbar-nav navbar-right">

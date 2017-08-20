@@ -24,7 +24,10 @@
 		<br/>				
 		<div class="row">	
 				<div class="col-md-12">
-				<a href="/customer/add">Create</a>
+				<a href="/customer/add">Create Tamu</a> 
+				@if ($role==config("config.supervisor"))
+					| <a href="/customer/addmanagement">Create Management</a>
+				@endif
 				</div>
 			</div>
 			<br/>		

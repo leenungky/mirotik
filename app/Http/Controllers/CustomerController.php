@@ -25,6 +25,7 @@ class CustomerController extends Controller {
 	private $api;
 	private $path = "";
 	private $domain_qr = "http://cabinhotel.hotspot.com/login";
+	private $fo_profiles = array("room_profile", "meeting_profile_suzuka", "meeting_profile_monza", "meeting_profile_monaco", "meeting_profile_sepang");
 	public function __construct(Request $req) {
 		$this->data["type"]= "user_hotspot";      
 		$this->data["req"] = $req;
@@ -44,6 +45,14 @@ class CustomerController extends Controller {
 		$this->data["room"] = $room;
 		return view('foffice.new', $this->data);
 	}
+
+	public function getAddmanagement(){									
+		if ($this->data["role"]!=config("config.supervisor")){
+			return redirect('/customer/list');
+		}
+		return view('foffice.management', $this->data);
+	}
+
 
 	public function getEdit($id){						
 		if ($this->data["role"]!=config("config.supervisor")){
@@ -74,8 +83,8 @@ class CustomerController extends Controller {
 		if ($this->data["role"]!=config("config.supervisor")){
 			return redirect('/customer/list');
 		}
-		if ($this->api->connect($this->connect["host"], 
-				$this->connect["user"], 
+		if ($this->api->connect($this->connect["host"], 	
+			$this->connect["user"], 
 				$this->connect["password"])) {
 			$remove=$this->api->comm($this->path."/user/remove",Array( 				
 			 	 ".id" => $id,
@@ -94,7 +103,7 @@ class CustomerController extends Controller {
 		$this->data["usermkr"] = array();
 		if ($this->api->connect($this->connect["host"], 
 			$this->connect["user"], 
-			$this->connect["password"])) {						
+			$this->connect["password"])) {									
 			$this->data["usermkr"] = $this->api->comm($this->path."/user/print");									
 			$idArray = array();
 			foreach ($this->data["usermkr"] as $key => $value) {
@@ -108,11 +117,22 @@ class CustomerController extends Controller {
 
 			$showArray = array();
 			foreach ($this->data["usermkr"] as $key => $value) {
+				if ($this->data["role"]==config("config.front_office")){
+					if (isset($value["profile"]) ){
+						
+						if (in_array($value["profile"], $this->fo_profiles)){
+							$showArray[] = array($value[".id"], $value["name"], isset($mikrotikArray[$value[".id"]]) ? $mikrotikArray[$value[".id"]] : "", isset($value["password"]) ? $value["password"] : "");				
+						}
+					} 
+				}else{
 				$showArray[] = array($value[".id"], $value["name"], isset($mikrotikArray[$value[".id"]]) ? $mikrotikArray[$value[".id"]] : "", isset($value["password"]) ? $value["password"] : "");				
+				}
 			}	
 			// echo "<pre>";	
 			// print_r($showArray);
+			// print_r($this->data["usermkr"]);
 			// die();
+
 			$this->data["show"] = $showArray;
 			$this->api->disconnect(); 			
 		}	
@@ -238,6 +258,53 @@ class CustomerController extends Controller {
 		
 		}		
 		return redirect('/customer/list')->with('message', "Successfull Update");
+	}
+
+	public function postCreatemanagement(){
+		if ($this->data["role"]!=config("config.supervisor")){
+			return redirect('/customer/list');
+		}
+		$req = $this->data["req"];        
+        $arrValidate = [            
+            'name' => 'required',
+        ];
+
+        $validator = Validator::make($req->all(), $arrValidate);
+
+        if ($validator->fails()) {            
+            return Redirect::to(URL::previous())->withInput(Input::all())->withErrors($validator);            
+        }
+
+        $input  = $req->input();        
+        $message = "Successfull created";
+		if ($this->api->connect($this->connect["host"], 
+				$this->connect["user"], 
+				$this->connect["password"])) {
+			$password = SiteHelpers::generateRandomString();			
+			$profile = "management_profile";
+			
+			
+			$response=$this->api->comm($this->path."/user/add",Array( 				
+				"name" => $input['name'],				
+				"password" => $password,
+				"profile" => $profile
+			));						
+			$this->api->disconnect(); 													
+			if (isset($response["!trap"][0]["message"])){
+				return redirect('/customer/management')->withInput(Input::all())->with('error', $response["!trap"][0]["message"]);
+			}else{		
+				$arrInsert = $input;						
+				$arrInsert["room"] = "management";
+				$arrInsert["password"] = $password;
+				$arrInsert["created_by"] = \Auth::user()->id;
+				$arrInsert["mikrotik_id"] = $response;
+				$arrInsert["checkin"] = date("Y-m-d");        		
+				$arrInsert["created_at"] = date("Y-m-d h:i:s");
+				unset($arrInsert["_token"]);  
+				DB::table("mikrotik")->insert($arrInsert);
+			}
+		}		
+		return redirect('/customer/list')->with('message', $message);
 	}
 
 	public function checkValidRoom($input,$action, $id = null){

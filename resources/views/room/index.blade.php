@@ -83,11 +83,8 @@
 								<td>{{$value->name}}</td>
 								<td>{{$value->description}}</td>								
 								<td>
-									<a href="javascript:void(0)" class="print" val="{{$value->id}}" val-name="{{$value->id}}" val-password="{{$value->id}}">
-			    						 <span class="glyphicon glyphicon-print"></span> 
-			    					</a>
 									@if ($role==config("config.supervisor") || $value->islock==0)
-										| <a href="/room/edit/{{$value->id}}">
+										<a href="/room/edit/{{$value->id}}">
 											<span class="edit"> 
 						    					<span class="glyphicon glyphicon-pencil"></span>
 						    				</span>
