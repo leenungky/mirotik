@@ -12,5 +12,35 @@ class SiteHelpers
 			  }			  
 			  return $randomString;
 		}
+
+		public static function alert( $task , $message)	{
+			if($task =='error') {
+				$alert ='
+				<div class="alert alert-danger  fade in block-inner">
+					<button data-dismiss="alert" class="close" type="button"> x </button>
+				<i class="icon-cancel-circle"></i> '. $message.' </div>
+				';			
+			} elseif ($task =='success') {
+				$alert ='
+				<div class="alert alert-success fade in block-inner">
+					<button data-dismiss="alert" class="close" type="button"> x </button>
+				<i class="icon-checkmark-circle"></i> '. $message.' </div>
+				';			
+			} elseif ($task =='warning') {
+				$alert ='
+				<div class="alert alert-warning fade in block-inner">
+					<button data-dismiss="alert" class="close" type="button"> x </button>
+				<i class="icon-warning"></i> '. $message.' </div>
+				';			
+			} else {
+				$alert ='
+				<div class="alert alert-info  fade in block-inner">
+					<button data-dismiss="alert" class="close" type="button"> x </button>
+				<i class="icon-info"></i> '. $message.' </div>
+				';			
+			}
+			return $alert;
+	
+	} 		
 			
 }

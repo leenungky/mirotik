@@ -30,6 +30,9 @@ class CustomerController extends Controller {
 		$this->data["type"]= "user_hotspot";      
 		$this->data["req"] = $req;
 		$this->data["role"] = strtolower($req->session()->get("role", ""));				
+		if (empty($this->data["role"])){
+			die();
+		}
 		$this->api = new RouterosApi();
 		$this->api->debug = false;
 		$this->api->port = 8729;
@@ -40,9 +43,16 @@ class CustomerController extends Controller {
 		$this->connect = array("host" => "202.169.46.205", "user" => "nungky", "password" => "cabin888");
 	} 
 	
-	public function getAdd(){									
-		$room = DB::table("room")->select("name")->get();
-		$meetroom = DB::table("meetroom")->get();
+	public function getAdd(){
+		$room_in_use = DB::table("mikrotik")->select("room")->whereNull("deleted_at")->groupBy("room")->get();;				
+		$room_in_use = json_decode(json_encode($room_in_use), True);		
+		
+		$room = DB::table("room")->select("name")->whereNotIn("name", $room_in_use);
+		if ($this->data["role"]==config("config.front_office")){
+			$room = $room->where("ishidden",0);
+		}
+		$room = $room->get();
+		$meetroom = DB::table("meetroom")->select("name")->whereNotIn("name", $room_in_use)->get();
 		$this->data["room"] = $room;
 		$this->data["meetroom"] = $meetroom;
 		return view('foffice.new', $this->data);
@@ -56,10 +66,11 @@ class CustomerController extends Controller {
 	}
 
 
-	public function getEdit($id){						
-		if ($this->data["role"]!=config("config.supervisor")){
-			return redirect('/customer/list');
-		}
+	public function getEdit($id){		
+		$message = $this->getMessageLock($id, "mengedit");
+		if(!empty($message) ){
+			return Redirect::to(URL::previous())->withInput(Input::all())->with("message", $message);            	
+		}								
 		if ($this->api->connect($this->connect["host"], 
 				$this->connect["user"], 
 				$this->connect["password"])) {
@@ -73,9 +84,21 @@ class CustomerController extends Controller {
 			if (isset($arr[0]["profile"])){
 				$this->data["mikrotik"] = DB::table("mikrotik")->where("mikrotik_id", $arr[0][".id"])->first();									
 			}
+			
+			$roomedit = "";
+			if (isset($this->data["mikrotik"])){
+				$roomedit = $this->data["mikrotik"]->room;
+			}
+			
+			$room_in_use = DB::table("mikrotik")->select("room")->whereNull("deleted_at")->where("room", "<>", $roomedit)->groupBy("room")->get();		
+			$room_in_use = json_decode(json_encode($room_in_use), True);					
 
-			$room = DB::table("room")->get();
-			$meetroom = DB::table("meetroom")->get();
+			$room = DB::table("room")->select("name")->whereNotIn("name", $room_in_use);
+			if ($this->data["role"]==config("config.front_office")){
+				$room = $room->where("ishidden",0);
+			}
+			$room = $room->get();			
+			$meetroom = DB::table("meetroom")->select("name")->whereNotIn("name", $room_in_use)->get();						
 			$this->data["room"] = $room;
 			$this->data["meetroom"] = $meetroom;
 			return view('foffice.edit', $this->data);
@@ -83,10 +106,11 @@ class CustomerController extends Controller {
 		
 	}
 
-	public function getDelete($id){
-		if ($this->data["role"]!=config("config.supervisor")){
-			return redirect('/customer/list');
-		}
+	public function getDelete($id){						
+		$message = $this->getMessageLock($id, "menghapus");
+		if(!empty($message) ){
+			return Redirect::to(URL::previous())->withInput(Input::all())->with("message", $message);            	
+		}		
 		if ($this->api->connect($this->connect["host"], 	
 			$this->connect["user"], 
 				$this->connect["password"])) {
@@ -122,22 +146,19 @@ class CustomerController extends Controller {
 			$showArray = array();
 			foreach ($this->data["usermkr"] as $key => $value) {
 				if ($this->data["role"]==config("config.front_office")){
-					if (isset($value["profile"]) ){
-						
+					if (isset($value["profile"]) ){						
 						if (in_array($value["profile"], $this->fo_profiles)){
-							$showArray[] = array($value[".id"], $value["name"], isset($mikrotikArray[$value[".id"]]) ? $mikrotikArray[$value[".id"]] : "", isset($value["password"]) ? $value["password"] : "");				
+							$showArray[] = array("id" =>$value[".id"], "name"=>$value["name"], "room" =>isset($mikrotikArray[$value[".id"]]) ? $mikrotikArray[$value[".id"]] : "",  "password" =>isset($value["password"]) ? $value["password"] : "");				
 						}
 					} 
 				}else{
-				$showArray[] = array($value[".id"], $value["name"], isset($mikrotikArray[$value[".id"]]) ? $mikrotikArray[$value[".id"]] : "", isset($value["password"]) ? $value["password"] : "");				
+					$showArray[] = array("id" =>$value[".id"], "name"=>$value["name"], "room" =>isset($mikrotikArray[$value[".id"]]) ? $mikrotikArray[$value[".id"]] : "",  "password" =>isset($value["password"]) ? $value["password"] : "");				
 				}
 			}	
-			// echo "<pre>";	
-			// print_r($showArray);
-			// print_r($this->data["usermkr"]);
-			// die();
 
-			$this->data["show"] = $showArray;
+			// $array = collect($showArray)->sortBy('name')->reverse()->toArray();
+			$array = collect($showArray)->sortBy('room')->toArray();
+			$this->data["show"] = $array;
 			$this->api->disconnect(); 			
 		}	
 		return view('foffice.index', $this->data);
@@ -182,7 +203,8 @@ class CustomerController extends Controller {
 				$this->connect["user"], 
 				$this->connect["password"])) {
 			$password = SiteHelpers::generateRandomString();
-			$room = DB::table("room")->where("name", $input["room"])->first();			
+			$room = DB::table("room")->where("name", $input["room"])->first();						
+			$profile = "";
 			if (isset($room)){
 				$profile = "room_profile";
 			}else{
@@ -200,7 +222,7 @@ class CustomerController extends Controller {
 			$this->api->disconnect(); 													
 			if (isset($response["!trap"][0]["message"])){
 				return redirect('/customer/add')->withInput(Input::all())->with('error', $response["!trap"][0]["message"]);
-			}else{		
+			}else{
 				$arrInsert = $input;						
 				$arrInsert["password"] = $password;
 				$arrInsert["created_by"] = \Auth::user()->id;
@@ -348,6 +370,20 @@ class CustomerController extends Controller {
 				return true;
 			}
 		}
+	}
+
+	public function getMessageLock($id, $action){
+		$msg = "";
+		$mikrotik = DB::table("mikrotik")->select("room")->where("mikrotik_id", $id)->first();		
+		if (isset($mikrotik)){
+			$room = DB::table("room")->where("name", $mikrotik->room)->first();
+			if (isset($room)){
+				if ($room->islock==1){								
+					$msg =  "Tidak dapat ".$action." user untuk Room ".$room->name." sedang di lock oleh supevisor";					
+				}
+			}
+		}
+		return $msg;
 	}
 		
 }

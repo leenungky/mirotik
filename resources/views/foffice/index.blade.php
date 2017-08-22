@@ -56,23 +56,24 @@
 						@foreach ($show as $key => $value)
 							<tr>
 								<td>{{($key+1)}}</td>
-								<td>{{$value[1]}}</td>								
-								<td>{{$value[2]}}</td>						
-								<td>
-									@if ($role==config("config.supervisor"))
-										<a href="/customer/edit/{{$value[0]}}">
+								<td>{{$value["name"]}}</td>								
+								<td>{{$value["room"]}}</td>						
+								<td>									
+										<a href="/customer/edit/{{$value["id"]}}">
 											<span class="edit"> 
 						    					<span class="glyphicon glyphicon-pencil"></span>
 						    				</span>
-					    				</a> | 
-					    				<a href="/customer/delete/{{$value[0]}}" class="confirmation">
+					    				</a> 
+					    				
+					    				| 
+					    				<a href="/customer/delete/{{$value["id"]}}" class="confirmation">
 						    				<span class="delete">
 					    						<span class="glyphicon glyphicon-remove"></span>
 					    					</span> 
 				    					</a>
-				    					| 			    					
-			    					@endif
-			    					<a href="javascript:void(0)" class="print" val="{{$value[0]}}" val-name="{{$value[1]}}" val-password="{{$value[3]}}">
+				    					 			    					
+			    					
+			    					| <a href="javascript:void(0)" class="print" val="{{$value["id"]}}" val-name="{{$value["name"]}}" val-password="{{$value["password"]}}">
 			    						 <span class="glyphicon glyphicon-print"></span> 
 			    					</a>
 								</td>

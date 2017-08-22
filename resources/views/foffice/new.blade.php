@@ -45,7 +45,7 @@
 				<form method="post" action="/customer/create" class="formsubmit">
 					<input type="hidden" name="_token" value="{{ csrf_token() }}">					
 					<div class="form-group">
-					    <label for="email">Nama Tamu</label>
+					    <label for="email">Kamar</label>
 						 <input type="text" class="form-control" id="name" name="name" placeholder="input no kamar" value="{{ old('name') }}" required>
 					</div>							
 					<div class="cls_room">
@@ -72,24 +72,31 @@
 <script type="text/javascript">
 	$(document).ready(function(){			
 
-		 var availableTags = [
+		 var projects = [
 		      @foreach ($room as $key => $value)
-		      	"{{$value->name}}",
+		      	{value: "{{$value->name}}",label: "{{$value->name}}"},
 		      @endforeach
 		      @foreach ($meetroom as $key => $value)
-		      	"{{$value->name}}",
+		      	{value: "{{$value->name}}",label: "{{$value->name}}"},
 		      @endforeach
 		    ];
 		    $( "#room" ).autocomplete({
-		      source: availableTags,
-		      minLength: 2,
-		      change: function(event,ui){
-		      	console.log(ui);
-		    	if (ui.item == null){                    
-		        	$(this).val("");
-		            return false;
-		        }
-		    }
+		      	source: projects,
+		      	minLength: 2,
+		      	change: function(event,ui){
+		      		console.log(ui);
+		    		if (ui.item == null){                    
+		        		$(this).val("");
+		            	return false;
+		        	}
+		    	}
+		  //   	,open: function (event, ui) {
+				//     var len = $('.ui-autocomplete > li').length;
+		  //           $('.ui-autocomplete > li').css("color", function() {
+		  //               return $(this).text().indexOf('+') > -1 ? 'red' : '';
+		  //           });
+		  //           $(this).html('Founded ' + len + ' results');
+				// }
 		    });
 		
 	});

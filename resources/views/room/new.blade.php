@@ -40,8 +40,7 @@
 					<div class="form-group">
 					    <label for="email">Description</label>
 						 <textarea  class="form-control" id="description" name="description" placeholder="input username">{{ old('description') }}</textarea> 
-					</div>					
-					
+					</div>										
 					<button type="submit" class="btn">Submit</button>
 				</form>
 			</div>

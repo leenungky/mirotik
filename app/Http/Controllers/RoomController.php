@@ -19,8 +19,12 @@ class RoomController extends Controller {
     	$this->data["type"]= "master_room";    	
     	$this->data["req"]= $req;    	
         $this->data["role"] = strtolower($req->session()->get("role", ""));             
+
         if (empty($this->data["role"])) {
             die("You are not user, please login");
+        }
+        if ($this->data["role"]!=config("config.supervisor")) {
+            die("You are not user");
         }
     }
 
@@ -141,14 +145,8 @@ class RoomController extends Controller {
         return Redirect::to('/cities/setcitykecamatan/'.$req->input("city_id"));
     }
 
-	private function _get_index_filter($filter){
-        if ($this->data["role"]==config("config.supevisor")){
-            $dbcust = DB::table("room");
-        }else{
-            $dbcust = DB::table("room")->where("ishidden", "0");
-        }
-        
-        
+	private function _get_index_filter($filter){        
+        $dbcust = DB::table("room");        
         if (isset($filter["name"])){
             $dbcust = $dbcust->where("name", "like", "%".$filter["name"]."%");
         }        

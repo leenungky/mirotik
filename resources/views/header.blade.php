@@ -25,20 +25,18 @@
           </ul>
         </li>        
         
+        @if ($role==config("config.supervisor"))
         <li class="dropdown">
               <a class="dropdown-toggle" data-toggle="dropdown" href="#">Master Data
               <span class="caret"></span></a>
-              <ul class="dropdown-menu">                  
-                @if ($role==config("config.supervisor"))   
+              <ul class="dropdown-menu">                                     
                     <li><a href="/user/list">User</a></li>                                              
-                    <li role="separator" class="divider"></li>                      
-                @endif  
+                    <li role="separator" class="divider"></li>                                      
                 <li><a href="/room/list">Room</a></li>      
                 <li role="separator" class="divider"></li>                    
                 <li><a href="/meetroom/list">Meeting Room</a></li>                    
               </ul>
-            </li>        
-          @if ($role==config("config.supervisor"))   
+            </li>                  
             <li><a href="/report/list">Report</a></li>   
           @endif            
     </ul>

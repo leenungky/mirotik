@@ -144,7 +144,7 @@ class UserController extends Controller {
 
 	public function getRegister() {        
 			if(\Auth::check()):
-				 return Redirect::to('')->with('message',\SiteHelpers::alert('success','Youre already login'));
+				 return Redirect::to('')->with('message','Youre already login');
 			else:
 				 return Redirect::to('user/login');			  	
 		 endif ; 
@@ -173,7 +173,7 @@ class UserController extends Controller {
 		$authen->username = trim($request->input('username'));			
 		$authen->password = \Hash::make($request->input('password'));
 		$authen->save();
-		return Redirect::to('user/list')->with('message',\SiteHelpers::alert('success',"Successfull created"));
+		return Redirect::to('user/list')->with('message',"Successfull created");
 		
 	}
 	
@@ -182,15 +182,15 @@ class UserController extends Controller {
 		$req = $this->data["req"];
 		$num = $request->input('code');
 		if($num =='')
-			return Redirect::to('user/login')->with('message',\SiteHelpers::alert('error','Invalid Code Activation!'));
+			return Redirect::to('user/login')->with('message','Invalid Code Activation!');
 		
 		$user =  User::where('activation','=',$num)->get();
 		if (count($user) >=1)
 		{
 			\DB::table('tb_users')->where('activation', $num )->update(array('active' => 1,'activation'=>''));
-			return Redirect::to('user/login')->with('message',\SiteHelpers::alert('success','Your account is active now!'));			
+			return Redirect::to('user/login')->with('message','Your account is active now!');			
 		} else {
-			return Redirect::to('user/login')->with('message',\SiteHelpers::alert('error','Invalid Code Activation!'));
+			return Redirect::to('user/login')->with('message','Invalid Code Activation!');
 		}
 	}
 
@@ -231,7 +231,7 @@ class UserController extends Controller {
 							return response()->json(['status' => 'error', 'message' => 'Your Account is not active']);
 						} else {
 							\Auth::logout();
-							return Redirect::to('user/login')->with('message', SiteHelpers::alert('error','Your Account is not active'));
+							return Redirect::to('user/login')->with('message', 'Your Account is not active');
 						}
 						
 					} else if($row->active=='2')
@@ -243,7 +243,7 @@ class UserController extends Controller {
 						} else {
 							// BLocked users
 							\Auth::logout();
-							return Redirect::to('user/login')->with('message', SiteHelpers::alert('error','Your Account is BLocked'));
+							return Redirect::to('user/login')->with('message', 'Your Account is BLocked');
 						}
 					} else {
 
@@ -364,10 +364,9 @@ class UserController extends Controller {
 			$user->password = \Hash::make($request->input('password'));
 			$user->save();
 
-			return Redirect::to('user/profile')->with('message', \SiteHelpers::alert('success','Password has been saved!'));
+			return Redirect::to('user/profile')->with('message', 'Password has been saved!');
 		} else {
-			return Redirect::to('user/profile')->with('message', \SiteHelpers::alert('error','The following errors occurred')
-			)->withErrors($validator)->withInput();
+			return Redirect::to('user/profile')->with('message', 'The following errors occurred')->withErrors($validator)->withInput();
 		}
 		
 	}	
@@ -417,15 +416,14 @@ class UserController extends Controller {
 				$affectedRows = User::where('email', '=',$user->email)
 								->update(array('reminder' => $request->input('_token')));
 								
-				return Redirect::to('user/login')->with('message', SiteHelpers::alert('success','Please check your email'));	
+				return Redirect::to('user/login')->with('message', 'Please check your email');	
 				
 			} else {
-				return Redirect::to('user/login?reset')->with('message', SiteHelpers::alert('error','Cant find email address'));
+				return Redirect::to('user/login?reset')->with('message','Cant find email address');
 			}
 
 		}  else {
-			return Redirect::to('user/login?reset')->with('message', 'The following errors occurred'
-			)->withErrors($validator)->withInput();
+			return Redirect::to('user/login?reset')->with('message', 'The following errors occurred')->withErrors($validator)->withInput();
 		}	 
 	}	
 	
@@ -440,7 +438,7 @@ class UserController extends Controller {
 			return view('user.remind',$this->data);
 
 		} else {
-			return Redirect::to('user/login')->with('message', \SiteHelpers::alert('error','Cant find your reset code'));
+			return Redirect::to('user/login')->with('message', 'Cant find your reset code');
 		}
 		
 	}	
@@ -463,10 +461,9 @@ class UserController extends Controller {
 				$user->password = \Hash::make($request->input('password'));
 				$user->save();
 			}
-			return Redirect::to('user/login')->with('message',\SiteHelpers::alert('success','Password has been saved!'));
+			return Redirect::to('user/login')->with('message','Password has been saved!');
 		} else {
-			return Redirect::to('user/reset/'.$token)->with('message', \SiteHelpers::alert('error','The following errors occurred')
-			)->withErrors($validator)->withInput();
+			return Redirect::to('user/reset/'.$token)->with('message','The following errors occurred')->withErrors($validator)->withInput();
 		}	
 	
 	}	
@@ -497,10 +494,8 @@ class UserController extends Controller {
 
 		if(is_null($user)){
 		  return Redirect::to('user/login')
-				->with('message', \SiteHelpers::alert('error','You have not registered yet '))
-				->withInput();
+				->with('message', 'You have not registered yet ')->withInput();
 		} else{
-
 		    Auth::login($user);
 			if(Auth::check())
 			{
@@ -510,13 +505,13 @@ class UserController extends Controller {
 				{
 					// inactive 
 					Auth::logout();
-					return Redirect::to('user/login')->with('message', \SiteHelpers::alert('error','Your Account is not active'));
+					return Redirect::to('user/login')->with('message', 'Your Account is not active');
 
 				} else if($row->active=='2')
 				{
 					// BLocked users
 					Auth::logout();
-					return Redirect::to('user/login')->with('message', \SiteHelpers::alert('error','Your Account is BLocked'));
+					return Redirect::to('user/login')->with('message', 'Your Account is BLocked');
 				} else {
 					Session::put('uid', $row->id);
 					Session::put('gid', $row->group_id);

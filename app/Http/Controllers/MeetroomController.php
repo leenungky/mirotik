@@ -22,6 +22,9 @@ class MeetroomController extends Controller {
         if (empty($this->data["role"])) {
             die("You are not user, please login");
         }
+        if ($this->data["role"]!=config("config.supervisor")) {
+            die("You are not user");
+        }
     }
 
 	public function getList(){  
@@ -110,6 +113,5 @@ class MeetroomController extends Controller {
         }        
         return $dbcust;
     }
-
 }
     

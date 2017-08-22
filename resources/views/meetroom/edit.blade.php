@@ -36,6 +36,10 @@
 					<div class="form-group">
 					    <label for="email">Room Name</label>
 						 <input type="text" class="form-control" id="name" name="name" placeholder="input room name" value="{{$meetroom->name}}" required>
+					</div>		
+					<div class="form-group">
+					    <label for="email">Room Name</label>
+						 <input type="text" class="form-control" id="name" name="name" placeholder="input room name" value="{{$meetroom->name}}" required>
 					</div>					
 					<div class="form-group">
 					    <label for="email">Description</label>
