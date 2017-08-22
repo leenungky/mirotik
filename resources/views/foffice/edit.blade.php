@@ -34,7 +34,7 @@
 				<form method="post" action="/customer/update/{{$usermkr[".id"]}}" class="formsubmit">
 					<input type="hidden" name="_token" value="{{ csrf_token() }}">					
 					<div class="form-group">
-					    <label for="email">Nama Tamu</label>
+					    <label for="email">Kamar</label>
 						 <input type="text" class="form-control" id="name" name="name" placeholder="input name" value="{{$usermkr["name"]}}" required>
 					</div>		
 					

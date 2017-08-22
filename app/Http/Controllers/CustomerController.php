@@ -75,8 +75,8 @@ class CustomerController extends Controller {
 				$this->connect["user"], 
 				$this->connect["password"])) {
 			$arr=$this->api->comm($this->path."/user/print",Array( 				
-			 	 "?.id" => $id
-			)); 			
+			 	 "?.id" => $id	
+		)); 			
 			$this->data["profiles"] = $this->api->comm($this->path."/user/profile/print");						
 			$this->data["usermkr"] = $arr[0];						
 			$this->api->disconnect(); 			
@@ -128,15 +128,20 @@ class CustomerController extends Controller {
 		if (empty($this->data["role"])){
 			return redirect('/user/logout');		
 		}
+		                      
 		$this->data["usermkr"] = array();
 		if ($this->api->connect($this->connect["host"], 
 			$this->connect["user"], 
-			$this->connect["password"])) {									
+			$this->connect["password"])) {												
+			
+			
+
 			$this->data["usermkr"] = $this->api->comm($this->path."/user/print");									
 			$idArray = array();
 			foreach ($this->data["usermkr"] as $key => $value) {
 				$idArray[] = $value[".id"];
 			}
+
 			$mikrotikDB = DB::table("mikrotik")->whereIn("mikrotik_id",$idArray)->get();
 			$mikrotikArray = array();
 			foreach ($mikrotikDB as $key => $value) {
@@ -156,8 +161,10 @@ class CustomerController extends Controller {
 				}
 			}	
 
-			// $array = collect($showArray)->sortBy('name')->reverse()->toArray();
-			$array = collect($showArray)->sortBy('room')->toArray();
+			$req = $this->data["req"];
+			$input= $req->input();        
+			$array = $this->_get_index_sort($req, $input, $showArray);
+
 			$this->data["show"] = $array;
 			$this->api->disconnect(); 			
 		}	
@@ -283,16 +290,13 @@ class CustomerController extends Controller {
 		return redirect('/customer/list')->with('message', $message);
 	}
 
-	public function postUpdate($id){		
-		if ($this->data["role"]!=config("config.supervisor")){
-			return redirect('/customer/list');
-		}
+	public function postUpdate($id){				
 		$req = $this->data["req"];
 		$arrValidate = [            
             'name' => 'required',                   
             "room"=> 'required', 
             "checkout"=> 'required',             
-        ];
+        ];        
         $validator = Validator::make($req->all(),$arrValidate);
 
         if ($validator->fails()) {            
@@ -339,10 +343,34 @@ class CustomerController extends Controller {
 				DB::table("mikrotik")->insert($arrUpdate);
 			}
 		
-		}		
+		}	
 		return redirect('/customer/list')->with('message', "Successfull Update");
 	}
 
+
+	 private function _get_index_sort($req, $input, $showArray){ 
+	 	$array = collect($showArray)->sortBy('room')->toArray();                       		
+        if (isset($input["sort"])){
+            if (empty($input["order_by"])){
+                $order_by = "asc";       
+            }else{
+                $order_by = $input["order_by"];
+            }
+            $this->data["order_by"] = $order_by; 
+            $this->data["sort"] = $input["sort"];
+
+            if ($input["sort"]=="room"){
+                if ($order_by == "asc"){
+                    $this->data["arrow_nama"] = '<span class="glyphicon glyphicon-menu-down"></span>';
+                }elseif ($order_by == "desc"){
+                	$array = collect($showArray)->sortBy('room')->reverse()->toArray();			
+                    $this->data["arrow_nama"] = '<span class="glyphicon glyphicon-menu-up"></span>';
+                }                     
+            }
+            
+        }   
+        return $array;                    
+    }
 	
 
 	public function checkValidRoom($input,$action, $id = null){

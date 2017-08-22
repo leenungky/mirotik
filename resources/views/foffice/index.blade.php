@@ -44,11 +44,24 @@
 		
 		<div class="row">	
 			<div class="col-md-12">
-				<table class="table">					
+				<table class="table">
+					<?php 
+						$str_parameter = "";
+						if (isset($order_by)){
+							if ($order_by=="asc"){
+								$str_parameter = "&order_by=desc";
+							}
+							else if ($order_by=="desc"){
+								$str_parameter = "&order_by=asc";
+							}	
+						}
+					?>					
 					<thead>
-						<th>No</th>
-						<th>Nama Tamu</th>
+						<th>No</th>	
 						<th>No Kamar</th>						
+						<th width="120px"><a href="/customer/list?sort=room{{$str_parameter}}">Kamar</a>
+			    			{!!isset($arrow_nama) ? $arrow_nama : ""!!}
+			    		</th>						
 						<th>Action</th>
 					</thead>
 					<tbody>
@@ -132,6 +145,8 @@
 
 <script type="text/javascript">	
 	$(document).ready(function(){
+		// $(document).on('click', '.print', function(e) {
+		// $('.print').on('click',function(){
 		$('.print').click(function(e) { // catch the form's submit event		
 			var name = $(this).attr("val-name");
 			var password = $(this).attr("val-password");
