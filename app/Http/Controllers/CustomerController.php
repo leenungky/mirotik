@@ -76,7 +76,7 @@ class CustomerController extends Controller {
 				$this->connect["password"])) {
 			$arr=$this->api->comm($this->path."/user/print",Array( 				
 			 	 "?.id" => $id	
-		)); 			
+			)); 			
 			$this->data["profiles"] = $this->api->comm($this->path."/user/profile/print");						
 			$this->data["usermkr"] = $arr[0];						
 			$this->api->disconnect(); 			
@@ -137,6 +137,9 @@ class CustomerController extends Controller {
 			
 
 			$this->data["usermkr"] = $this->api->comm($this->path."/user/print");									
+		// echo "<pre>";
+		// print_r($this->data["usermkr"]);
+		// die();
 			$idArray = array();
 			foreach ($this->data["usermkr"] as $key => $value) {
 				$idArray[] = $value[".id"];
@@ -145,7 +148,7 @@ class CustomerController extends Controller {
 			$mikrotikDB = DB::table("mikrotik")->whereIn("mikrotik_id",$idArray)->get();
 			$mikrotikArray = array();
 			foreach ($mikrotikDB as $key => $value) {
-				$mikrotikArray[$value->mikrotik_id] = $value->room;
+				$mikrotikArray[$value->mikrotik_id] = $value->name;
 			}
 
 			$showArray = array();
@@ -153,11 +156,11 @@ class CustomerController extends Controller {
 				if ($this->data["role"]==config("config.front_office")){
 					if (isset($value["profile"]) ){						
 						if (in_array($value["profile"], $this->fo_profiles)){
-							$showArray[] = array("id" =>$value[".id"], "name"=>$value["name"], "room" =>isset($mikrotikArray[$value[".id"]]) ? $mikrotikArray[$value[".id"]] : "",  "password" =>isset($value["password"]) ? $value["password"] : "");				
+							$showArray[] = array("id" =>$value[".id"], "room"=>$value["name"], "name" =>isset($mikrotikArray[$value[".id"]]) ? $mikrotikArray[$value[".id"]] : "",  "password" =>isset($value["password"]) ? $value["password"] : "");				
 						}
 					} 
 				}else{
-					$showArray[] = array("id" =>$value[".id"], "name"=>$value["name"], "room" =>isset($mikrotikArray[$value[".id"]]) ? $mikrotikArray[$value[".id"]] : "",  "password" =>isset($value["password"]) ? $value["password"] : "");				
+					$showArray[] = array("id" =>$value[".id"], "room"=>$value["name"], "name" =>isset($mikrotikArray[$value[".id"]]) ? $mikrotikArray[$value[".id"]] : "",  "password" =>isset($value["password"]) ? $value["password"] : "");				
 				}
 			}	
 
@@ -200,9 +203,9 @@ class CustomerController extends Controller {
         }
 
         $input  = $req->input();        
-        if (!$this->checkValidRoom($input, "add")){
-        	return Redirect::to(URL::previous())->withInput(Input::all())->withErrors("Room ".$input["room"]." Sudah digunakan");            
-        }
+        // if (!$this->checkValidRoom($input, "add")){
+        // 	return Redirect::to(URL::previous())->withInput(Input::all())->withErrors("Room ".$input["room"]." Sudah digunakan");
+        // }
 
         
         $message = "Successfull created";
@@ -222,7 +225,7 @@ class CustomerController extends Controller {
 			}
 			
 			$response=$this->api->comm($this->path."/user/add",Array( 				
-				"name" => $input['name'],				
+				"name" => $input['room'],				
 				"password" => $password,
 				"profile" => $profile
 			));						
@@ -303,11 +306,11 @@ class CustomerController extends Controller {
             return Redirect::to(URL::previous())->withInput(Input::all())->withErrors($validator);            
         }	
 
-        $input  = $req->input();		        
+         $input  = $req->input();		        
 
-        if (!$this->checkValidRoom($input, "edit", $id)){
-        	return Redirect::to(URL::previous())->withInput(Input::all())->withErrors("Room ".$input["room"]." Sudah digunakan");            
-        }
+        // if (!$this->checkValidRoom($input, "edit", $id)){
+        // 	return Redirect::to(URL::previous())->withInput(Input::all())->withErrors("Room ".$input["room"]." Sudah digunakan");            
+        // }
 		if ($this->api->connect($this->connect["host"], 
 				$this->connect["user"], 
 				$this->connect["password"])) {
@@ -326,7 +329,7 @@ class CustomerController extends Controller {
 
 			$response = $this->api->comm($this->path."/user/set",array(
 			    ".id"               => $id,
-			    "name"          => $input["name"],
+			    "name"          => $input["room"],
 			    "password"          => $password,
 			    "profile"          => $profile,
 			));							

@@ -45,12 +45,12 @@
 				<form method="post" action="/customer/create" class="formsubmit">
 					<input type="hidden" name="_token" value="{{ csrf_token() }}">					
 					<div class="form-group">
-					    <label for="email">Kamar</label>
+					    <label for="email">Nama Tamu</label>
 						 <input type="text" class="form-control" id="name" name="name" placeholder="input no kamar" value="{{ old('name') }}" required>
 					</div>							
 					<div class="cls_room">
 						<div class="form-group">
-						    <label for="email">Ruangan</label>
+						    <label for="email">No Kamar</label>
 						   	<input type="text" class="form-control" id="room" name="room" placeholder="input Room" value="{{ old('room') }}" required>	
 						</div>						
 						<div class="form-group">

@@ -58,8 +58,8 @@
 					?>					
 					<thead>
 						<th>No</th>	
-						<th>No Kamar</th>						
-						<th width="120px"><a href="/customer/list?sort=room{{$str_parameter}}">Kamar</a>
+						<th>Nama Tamu</th>						
+						<th width="120px"><a href="/customer/list?sort=room{{$str_parameter}}">No Kamar</a>
 			    			{!!isset($arrow_nama) ? $arrow_nama : ""!!}
 			    		</th>						
 						<th>Action</th>
@@ -86,7 +86,7 @@
 				    					</a>
 				    					 			    					
 			    					
-			    					| <a href="javascript:void(0)" class="print" val="{{$value["id"]}}" val-name="{{$value["name"]}}" val-password="{{$value["password"]}}">
+			    					| <a href="javascript:void(0)" class="print" val="{{$value["id"]}}" val-name="{{$value["room"]}}" val-password="{{$value["password"]}}">
 			    						 <span class="glyphicon glyphicon-print"></span> 
 			    					</a>
 								</td>

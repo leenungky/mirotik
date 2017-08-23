@@ -34,13 +34,13 @@
 				<form method="post" action="/customer/update/{{$usermkr[".id"]}}" class="formsubmit">
 					<input type="hidden" name="_token" value="{{ csrf_token() }}">					
 					<div class="form-group">
-					    <label for="email">Kamar</label>
-						 <input type="text" class="form-control" id="name" name="name" placeholder="input name" value="{{$usermkr["name"]}}" required>
+					    <label for="email">Nama Tamu</label>
+						 <input type="text" class="form-control" id="name" name="name" placeholder="input name" value="{{$mikrotik->name}}" required>
 					</div>		
 					
 						<div class="form-group">
-						    <label for="email">Room</label>
-							<input type="text" class="form-control" id="room" name="room" placeholder="input room" value="{{isset($mikrotik->room) ? $mikrotik->room : ""}}" required>
+						    <label for="email">No Kamar</label>
+							<input type="text" class="form-control" id="room" name="room" placeholder="input room" value="{{$usermkr["name"]}}" required>
 						</div>						
 						<div class="form-group">
 						    <label for="email">Tanggal Checkout</label>
