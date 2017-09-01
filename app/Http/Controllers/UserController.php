@@ -240,8 +240,8 @@ class UserController extends Controller {
 						if($request->ajax() == true )
 						{
 							return response()->json(['status' => 'error', 'message' => 'Your Account is BLocked']);
-						} else {
-							// BLocked users
+						} else {	
+						// BLocked users
 							\Auth::logout();
 							return Redirect::to('user/login')->with('message', 'Your Account is BLocked');
 						}

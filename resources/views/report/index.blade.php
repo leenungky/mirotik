@@ -39,7 +39,7 @@
 			</div>
 		</div>
 		<div class="row">	
-			<div class="col-md-12" style="overflow: scroll;width: 98%">
+			<div class="col-md-12">
 				<table class="table">
 					<?php 
 						$str_parameter = "";
@@ -56,35 +56,19 @@
 						<th>No</th>
 						<th>Name</th>			    				
 						<th>Room</th>						
-						<th>Checkin</th>
-						<th>Checkout</th>						
-						<th>created_by</th>
-						<th>created_at</th>
-						<th>update_by</th>
-						<th>update_at</th>
-						<th>delete_by</th>
-						<th>delete_at</th>
+						<th>Action</th>
+						<th>Action By</th>	
+						<th>Action Date</th>						
 					</thead>
 					<tbody>
 						@foreach ($report as $key => $value)
 							<tr>
 								<td>{{$key+1}}</td>
-								<td>{{$value->name}}</td>								
+								<td>{{$value->name}}</td>
 								<td>{{$value->room}}</td>								
-								<td>{{$value->checkin}}</td>
-								<td>{{$value->checkout}}</td>
-								<td>{{$value->vcreate}}</td>
+								<td>{{$value->action}}</td>															
+								<td>{{$value->username}}</td>	
 								<td>{{$value->created_at}}</td>
-								<td>{{$value->vupdate}}</td>
-								<td>{{$value->updated_at}}</td>
-								<td>
-									@if ($value->deleted_by==-1)
-										System
-									@else
-										{{$value->vdelete}}
-									@endif									
-								</td>
-								<td>{{$value->deleted_at}}</td>								
 							</tr>																							
 						@endforeach
 					</tbody>

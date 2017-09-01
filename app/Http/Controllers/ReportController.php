@@ -22,7 +22,7 @@ class ReportController extends Controller {
             die("You are not user, please login");
         }
         if ($this->data["role"]!="spv"){
-            die("");
+            die("You are not user, please use other users");
         }
     }
 
@@ -32,7 +32,7 @@ class ReportController extends Controller {
         }
 		$req = $this->data["req"];      
         $input= $req->input();     
-        $data = $this->_get_index_filter($input);        
+        $data = $this->_get_index_filter($input);                
         $this->data["input"] = $input;
         $this->data["report"] = $data->paginate(20);
         return view('report.index', $this->data);
@@ -48,13 +48,10 @@ class ReportController extends Controller {
     }
 
 	private function _get_index_filter($filter = null){
-        $data = DB::table("mikrotik")
-            ->select(DB::raw("mikrotik.*, room,created.username as vcreate, updated.username as vupdate, 
-            deleted.username as vdelete"))
-            ->leftJoin(DB::raw("tb_users as created"), "created.id", "=", "mikrotik.created_by")
-            ->leftJoin(DB::raw("tb_users as updated"), "updated.id", "=", "mikrotik.updated_by")
-            ->leftJoin(DB::raw("tb_users as deleted"), "deleted.id", "=", "mikrotik.deleted_by")            
-            ->orderBy("mikrotik.id", "desc");
+        $data = DB::table("report")            
+            ->select(DB::raw("tb_users.*, report.action, report.created_at date, report.name, report.room"))
+            ->join("tb_users", "tb_users.id", "=", "report.user_id")            
+            ->orderBy("report.id", "desc");
         return $data;        
     }
 

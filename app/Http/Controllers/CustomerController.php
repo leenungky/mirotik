@@ -31,21 +31,21 @@ class CustomerController extends Controller {
 		$this->data["req"] = $req;
 		$this->data["role"] = strtolower($req->session()->get("role", ""));				
 		if (empty($this->data["role"])){
-			die();
+			die("Silahkan login");
 		}
 		$this->api = new RouterosApi();
 		$this->api->debug = false;
 		$this->api->port = 8729;
 		$this->api->ssl = true;
 		$this->api->timeout = 30;
-		$this->path = "/ip/hotspot";		
+		$this->path = "/ip/hotspot";
 		// $this->connect = array("host" => "180.250.113.42", "user" => "nungky", "password" => "123");				
 		$this->connect = array("host" => "202.169.46.205", "user" => "nungky", "password" => "cabin888");
 	} 
 	
 	public function getAdd(){
-		$room_in_use = DB::table("mikrotik")->select("room")->whereNull("deleted_at")->groupBy("room")->get();;				
-		$room_in_use = json_decode(json_encode($room_in_use), True);		
+		$room_in_use = DB::table("mikrotik")->select("room")->groupBy("room")->get();		
+		$room_in_use = json_decode(json_encode($room_in_use), True);						
 		
 		$room = DB::table("room")->select("name")->whereNotIn("name", $room_in_use);
 		if ($this->data["role"]==config("config.front_office")){
@@ -53,6 +53,7 @@ class CustomerController extends Controller {
 		}
 		$room = $room->get();
 		$meetroom = DB::table("meetroom")->select("name")->whereNotIn("name", $room_in_use)->get();
+		
 		$this->data["room"] = $room;
 		$this->data["meetroom"] = $meetroom;
 		return view('foffice.new', $this->data);
@@ -90,7 +91,7 @@ class CustomerController extends Controller {
 				$roomedit = $this->data["mikrotik"]->room;
 			}
 			
-			$room_in_use = DB::table("mikrotik")->select("room")->whereNull("deleted_at")->where("room", "<>", $roomedit)->groupBy("room")->get();		
+			$room_in_use = DB::table("mikrotik")->select("room")->where("room", "<>", $roomedit)->groupBy("room")->get();		
 			$room_in_use = json_decode(json_encode($room_in_use), True);					
 
 			$room = DB::table("room")->select("name")->whereNotIn("name", $room_in_use);
@@ -117,9 +118,12 @@ class CustomerController extends Controller {
 			$remove=$this->api->comm($this->path."/user/remove",Array( 				
 			 	 ".id" => $id,
 			));			
-			$this->api->disconnect(); 
-			$arrDeleted = array("deleted_by" =>\Auth::user()->id, "deleted_at" => date("Y-m-d h:i:s"));
-			DB::table("mikrotik")->where("mikrotik_id", $id)->update($arrDeleted);
+			$this->api->disconnect(); 			
+			$mikrotik_db = DB::table("mikrotik")->where("mikrotik_id", $id);
+			$mikrotik = $mikrotik_db->first();
+
+			$mikrotik_db->delete();				
+			$this->report( array("room"=> $mikrotik->room, "name" => $mikrotik->name, "user_id"=>\Auth::user()->id, "action" => "delete") );				
 		}
 		return redirect('/customer/list')->with('message', "Successfull delete");
 	}
@@ -133,13 +137,9 @@ class CustomerController extends Controller {
 		if ($this->api->connect($this->connect["host"], 
 			$this->connect["user"], 
 			$this->connect["password"])) {												
-			
-			
 
 			$this->data["usermkr"] = $this->api->comm($this->path."/user/print");									
-		// echo "<pre>";
-		// print_r($this->data["usermkr"]);
-		// die();
+		
 			$idArray = array();
 			foreach ($this->data["usermkr"] as $key => $value) {
 				$idArray[] = $value[".id"];
@@ -180,8 +180,9 @@ class CustomerController extends Controller {
 		$req = $this->data["req"];
 		$name = $req->input("name", ""); 
 		$code = $req->input("password", ""); 				
+		$room = $req->input("room", ""); 						
 		$res = base64_encode(QrCode::format('png')->size(110)->generate($this->domain_qr."?username=".$name."&password=".$code));
-		$response = array("response"=>array("code"=>200 , "messsage" => "ok"), "data" => array("name" => $name, "password" =>$code), "qrcode" => $res);
+		$response = array("response"=>array("code"=>200 , "messsage" => "ok"), "data" => array("name" => $name, "password" =>$code, "room" =>$room), "qrcode" => $res);
         return response()->json($response);
 	}
 
@@ -203,10 +204,6 @@ class CustomerController extends Controller {
         }
 
         $input  = $req->input();        
-        // if (!$this->checkValidRoom($input, "add")){
-        // 	return Redirect::to(URL::previous())->withInput(Input::all())->withErrors("Room ".$input["room"]." Sudah digunakan");
-        // }
-
         
         $message = "Successfull created";
 		if ($this->api->connect($this->connect["host"], 
@@ -234,13 +231,13 @@ class CustomerController extends Controller {
 				return redirect('/customer/add')->withInput(Input::all())->with('error', $response["!trap"][0]["message"]);
 			}else{
 				$arrInsert = $input;						
-				$arrInsert["password"] = $password;
-				$arrInsert["created_by"] = \Auth::user()->id;
+				$arrInsert["password"] = $password;				
 				$arrInsert["mikrotik_id"] = $response;
 				$arrInsert["checkin"] = date("Y-m-d");        		
 				$arrInsert["created_at"] = date("Y-m-d h:i:s");
 				unset($arrInsert["_token"]);  
-				DB::table("mikrotik")->insert($arrInsert);
+				$id = DB::table("mikrotik")->insertGetId($arrInsert);				
+				$this->report( array("room" =>$arrInsert["room"], "name"=>$arrInsert["name"], "user_id"=>\Auth::user()->id, "action" => "create") );				
 			}
 		}		
 		return redirect('/customer/list')->with('message', "Successfull create");
@@ -277,17 +274,17 @@ class CustomerController extends Controller {
 			));						
 			$this->api->disconnect(); 													
 			if (isset($response["!trap"][0]["message"])){
-				return redirect('/customer/management')->withInput(Input::all())->with('error', $response["!trap"][0]["message"]);
+				return redirect('/customer/addmanagement')->withInput(Input::all())->with('error', $response["!trap"][0]["message"]);
 			}else{		
 				$arrInsert = $input;						
 				$arrInsert["room"] = "management";
-				$arrInsert["password"] = $password;
-				$arrInsert["created_by"] = \Auth::user()->id;
+				$arrInsert["password"] = $password;				
 				$arrInsert["mikrotik_id"] = $response;
 				$arrInsert["checkin"] = date("Y-m-d");        		
 				$arrInsert["created_at"] = date("Y-m-d h:i:s");
 				unset($arrInsert["_token"]);  
-				DB::table("mikrotik")->insert($arrInsert);
+				$id = DB::table("mikrotik")->insertGetId($arrInsert);
+				$this->report( array("room" =>$arrInsert["room"], "name"=>$arrInsert["name"], "user_id"=>\Auth::user()->id, "action" => "create") );	
 			}
 		}		
 		return redirect('/customer/list')->with('message', $message);
@@ -332,18 +329,18 @@ class CustomerController extends Controller {
 			    "name"          => $input["room"],
 			    "password"          => $password,
 			    "profile"          => $profile,
-			));							
-			$this->api->disconnect(); 		
+			));								
+		$this->api->disconnect(); 		
 			$mikrotikdb = DB::table("mikrotik")->where("mikrotik_id", $id)->first();
-			$arrUpdate = $input;								
-			$arrUpdate["updated_by"] = \Auth::user()->id;
-			$arrUpdate["updated_at"] = date("Y-m-d h:i:s");
+			$arrUpdate = $input;														
 			unset($arrUpdate["_token"]);  
 			if (isset($mikrotikdb)){				
 				DB::table("mikrotik")->where("mikrotik_id", $id)->update($arrUpdate);
+				$this->report(array( "room" => $mikrotikdb->room, "name"=> $mikrotikdb->name, "user_id"=>\Auth::user()->id, "action" => "update") );
 			}else{
 				$arrUpdate["mikrotik_id"] = $id;
-				DB::table("mikrotik")->insert($arrUpdate);
+				DB::table("mikrotik")->insertGetId($arrUpdate);
+				$this->report( array( "room" =>$arrUpdate["room"], "name"=>$arrUpdate["name"], "user_id"=>\Auth::user()->id, "action" => "update") );		
 			}
 		
 		}	
@@ -378,19 +375,19 @@ class CustomerController extends Controller {
 
 	public function checkValidRoom($input,$action, $id = null){
 		if ($action == "add"){
-			$data = DB::table("mikrotik")->where("room", $input["room"])->whereNull("deleted_at")->first();
+			$data = DB::table("mikrotik")->where("room", $input["room"])->first();
 			if (isset($data)){
 				return false;
 			}else{
 				return true;
 			}
 		}elseif ($action == "edit"){
-			$data = DB::table("mikrotik")->where("mikrotik_id", $id)->whereNull("deleted_at")->first();
+			$data = DB::table("mikrotik")->where("mikrotik_id", $id)->first();
 			if (isset($data->room)){
 				if ($data->room == $input["room"]){				
 					return true;
 				}else{				
-					$data = DB::table("mikrotik")->where("room", $input["room"])->whereNull("deleted_at")->first();
+					$data = DB::table("mikrotik")->where("room", $input["room"])->first();
 					if (isset($data)){
 						return false;
 					}else{
@@ -415,6 +412,11 @@ class CustomerController extends Controller {
 			}
 		}
 		return $msg;
+	}
+
+	public function report($params){
+		$params["created_at"] = date("Y-m-d h:i:s");
+		DB::table("report")->insert($params);
 	}
 		
 }

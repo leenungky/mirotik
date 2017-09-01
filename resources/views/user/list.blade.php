@@ -65,7 +65,7 @@
 						<th>Firstname</th>
 			    		<th>Lastname</th>
 			    		<th>Username</th>	
-			    		<th>role</th>			    			    																			
+			    		<th>role</th>
 						<th>Action</th>
 					</thead>
 					<tbody>
