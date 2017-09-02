@@ -67,6 +67,14 @@ class CustomerController extends Controller {
 	}
 
 
+	public function getAddstaff(){									
+		if ($this->data["role"]!=config("config.supervisor")){
+			return redirect('/customer/list');
+		}
+		return view('foffice.staff', $this->data);
+	}
+
+
 	public function getEdit($id){		
 		$message = $this->getMessageLock($id, "mengedit");
 		if(!empty($message) ){
@@ -123,7 +131,7 @@ class CustomerController extends Controller {
 			$mikrotik = $mikrotik_db->first();
 
 			$mikrotik_db->delete();				
-			$this->report( array("room"=> $mikrotik->room, "name" => $mikrotik->name, "user_id"=>\Auth::user()->id, "action" => "delete") );				
+			$this->report( array("room"=> isset($mikrotik) ? $mikrotik->room : "", "name" => isset($mikrotik) ? $mikrotik->name : "", "user_id"=>\Auth::user()->id, "action" => "delete") );				
 		}
 		return redirect('/customer/list')->with('message', "Successfull delete");
 	}
@@ -132,14 +140,14 @@ class CustomerController extends Controller {
 		if (empty($this->data["role"])){
 			return redirect('/user/logout');		
 		}
-		                      
+		    
+
 		$this->data["usermkr"] = array();
 		if ($this->api->connect($this->connect["host"], 
 			$this->connect["user"], 
 			$this->connect["password"])) {												
 
-			$this->data["usermkr"] = $this->api->comm($this->path."/user/print");									
-		
+			$this->data["usermkr"] = $this->api->comm($this->path."/user/print");												
 			$idArray = array();
 			foreach ($this->data["usermkr"] as $key => $value) {
 				$idArray[] = $value[".id"];
@@ -186,10 +194,7 @@ class CustomerController extends Controller {
         return response()->json($response);
 	}
 
-	public function postCreate(){
-		if ($this->data["role"]!=config("config.supervisor")){
-			return redirect('/customer/list');
-		}
+	public function postCreate(){		
 		$req = $this->data["req"];        
         $arrValidate = [            
             'name' => 'required',                   
@@ -208,7 +213,8 @@ class CustomerController extends Controller {
         $message = "Successfull created";
 		if ($this->api->connect($this->connect["host"], 
 				$this->connect["user"], 
-				$this->connect["password"])) {
+				$this->connect["password"])) {	
+
 			$password = SiteHelpers::generateRandomString();
 			$room = DB::table("room")->where("name", $input["room"])->first();						
 			$profile = "";
@@ -278,6 +284,53 @@ class CustomerController extends Controller {
 			}else{		
 				$arrInsert = $input;						
 				$arrInsert["room"] = "management";
+				$arrInsert["password"] = $password;				
+				$arrInsert["mikrotik_id"] = $response;
+				$arrInsert["checkin"] = date("Y-m-d");        		
+				$arrInsert["created_at"] = date("Y-m-d h:i:s");
+				unset($arrInsert["_token"]);  
+				$id = DB::table("mikrotik")->insertGetId($arrInsert);
+				$this->report( array("room" =>$arrInsert["room"], "name"=>$arrInsert["name"], "user_id"=>\Auth::user()->id, "action" => "create") );	
+			}
+		}		
+		return redirect('/customer/list')->with('message', $message);
+	}
+
+	public function postCreatestaff(){
+		if ($this->data["role"]!=config("config.supervisor")){
+			return redirect('/customer/list');
+		}
+		$req = $this->data["req"];        
+        $arrValidate = [            
+            'name' => 'required',
+        ];
+
+        $validator = Validator::make($req->all(), $arrValidate);
+
+        if ($validator->fails()) {            
+            return Redirect::to(URL::previous())->withInput(Input::all())->withErrors($validator);            
+        }
+
+        $input  = $req->input();        
+        $message = "Successfull created";
+		if ($this->api->connect($this->connect["host"], 
+				$this->connect["user"], 
+				$this->connect["password"])) {
+			$password = SiteHelpers::generateRandomString();			
+			$profile = "staff_profile";
+			
+			
+			$response=$this->api->comm($this->path."/user/add",Array( 				
+				"name" => $input['name'],				
+				"password" => $password,
+				"profile" => $profile
+			));						
+			$this->api->disconnect(); 													
+			if (isset($response["!trap"][0]["message"])){
+				return redirect('/customer/addmanagement')->withInput(Input::all())->with('error', $response["!trap"][0]["message"]);
+			}else{		
+				$arrInsert = $input;						
+				$arrInsert["room"] = "staff";
 				$arrInsert["password"] = $password;				
 				$arrInsert["mikrotik_id"] = $response;
 				$arrInsert["checkin"] = date("Y-m-d");        		

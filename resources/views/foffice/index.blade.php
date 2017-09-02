@@ -27,6 +27,7 @@
 				<a href="/customer/add">Create Tamu</a> 
 				@if ($role==config("config.supervisor"))
 					| <a href="/customer/addmanagement">Create Management</a>
+					| <a href="/customer/addstaff">Create Staff</a>
 				@endif
 				</div>
 			</div>
@@ -66,9 +67,10 @@
 					</thead>
 					<tbody>
 						@if (isset($show))
+						<?php $i=1; ?>
 						@foreach ($show as $key => $value)
 							<tr>
-								<td>{{($key+1)}}</td>
+								<td>{{($i++)}}</td>
 								<td>{{$value["name"]}}</td>								
 								<td>{{$value["room"]}}</td>						
 								<td>									
@@ -100,18 +102,18 @@
 		
 </div>
 <div class="row" id="printableArea" style="display: none">
-		<div class="left" style="width: 110px; font-size: 8px; margin-left: 10px">
+		<div class="left" style="width: 110px; font-size: 12px; margin-left: 10px">
 			<div><br/>
 				<div style="width: 100px;margin-left: 50px;margin-right: 50px;margin-bottom:20px; ">
 			   		<img src="{{ URL::asset('img/wifi.png') }}" width="30px">    			
 				</div>
-				<div style="font-size: 10px;font-weight: bold; padding: 10px;text-align: center;">
+				<div style="font-size: 12px;font-weight: bold; padding: 10px;text-align: center;">
 					<span class="val-room">2002</span>
 				</div>				
-				<div style="font-size: 10px;font-weight: bold; border-top:1px solid orange; padding: 10px;">
+				<div style="font-size: 12px;font-weight: bold; border-top:1px solid orange; padding: 10px;">
 					<span class="txt-attr">USER</span> : <span class="val-name"></span>
 				</div>				
-				<div style="font-size: 10px;font-weight: bold; border-top:1px solid orange; border-bottom: 1px solid orange; padding: 10px;">
+				<div style="font-size: 12px;font-weight: bold; border-top:1px solid orange; border-bottom: 1px solid orange; padding: 10px;">
 					<span class="txt-attr">PASS</span> : <span class="val-password"></span>
 				</div>						
 				
