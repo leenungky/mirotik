@@ -131,7 +131,7 @@
 			   	<img src="" alt="" id="qrcode" />				   	
 			</div>
     	</div>
-    	<div style="clear: both;"></div>    		    	
+    	<div style="clear: both;"></div>	    	
     	<div class="left" style="width: 110px;font-size: 7px; margin-left: 10px; margin-right: 10px;">    					
 			<p style="font-size: 11px;font-weight: bold;">
 				http://cabinhotel.co.id

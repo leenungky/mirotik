@@ -30,29 +30,51 @@ class ReportController extends Controller {
         if ($this->data["role"]!=config("config.supervisor")){
             return redirect('/customer/list');
         }
+        $this->data["parameter"] = $_SERVER['QUERY_STRING'];        
 		$req = $this->data["req"];      
-        $input= $req->input();     
-        $data = $this->_get_index_filter($input);                
-        $this->data["input"] = $input;
+        $filter= $req->input();     
+        $data = $this->_get_index_filter($filter);                
+        if (!empty($filter["from"]) || !empty($filter["to"])){
+            $this->data["filter"] = $filter;    
+        }else{
+            $this->data["filter"]["from"] = date("Y-m-d");    
+            $this->data["filter"]["to"] = date("Y-m-d");    
+        }
+        
         $this->data["report"] = $data->paginate(20);
         return view('report.index', $this->data);
     }
 
-    public function getPdf(){
+    public function getPdf(){        
         $req = $this->data["req"];
-        $input = $req->input();        
-        $data = $this->_get_index_filter();
+        $input = $req->input();                
+        $data = $this->_get_index_filter($input);
         $this->data["report"] = $data->get();
         $pdf = \PDF::loadView('report.pdf', $this->data)->setPaper('a4', 'landscape')->setWarnings(false);        
-        return $pdf->download('report-'.date("Y-m-d").'.pdf');
+        if (isset($input["from"]) && isset($input["to"])){
+            return $pdf->download('report-'.$input["from"].' to '.$input['to'].'.pdf');
+        }else{
+            return $pdf->download('report-'.date("Y-m-d").'.pdf');    
+        }
+        
     }
 
 	private function _get_index_filter($filter = null){
-        $data = DB::table("report")            
-            ->select(DB::raw("tb_users.*, report.action, report.created_at date, report.name, report.room"))
-            ->join("tb_users", "tb_users.id", "=", "report.user_id")            
+        $datadb = DB::table("report")            
+            ->select(DB::raw("tb_users.*, report.action, report.created_at date, report.name, report.room, report.user_id"))
+            ->join("tb_users", "tb_users.id", "=", "report.user_id", "left")            
             ->orderBy("report.id", "desc");
-        return $data;        
+        if(!empty($filter["from"])){
+            $datadb = $datadb->where("report.created_at", ">=" ,$filter["from"]);
+        }
+        if(!empty($filter["to"])){            
+            $datadb = $datadb->where("report.created_at", "<=" ,$filter["to"]);
+        }
+        if (empty($filter["from"]) && empty($filter["to"])){
+            $datadb = $datadb->where("report.created_at", "<=" ,"'".date('Y-m-d')."'");   
+        }
+
+        return $datadb;        
     }
 
 }

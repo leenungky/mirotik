@@ -146,7 +146,7 @@ class RoomController extends Controller {
     }
 
 	private function _get_index_filter($filter){        
-        $dbcust = DB::table("room");        
+        $dbcust = DB::table("room")->orderBy("name");        
         if (isset($filter["name"])){
             $dbcust = $dbcust->where("name", "like", "%".$filter["name"]."%");
         }        

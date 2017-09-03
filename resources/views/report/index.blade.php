@@ -34,24 +34,29 @@
 		    </div>
 		@endif 		
 		<div class="row">				
-			<div class="col-md-12">
-				<a href="/report/pdf" class="btn btn-primary">Export to PDF</a>
+			<form action="/report/list" method="get">
+				<div class="col-md-2">
+					FROM <br/>
+					<input type="text" name="from" class="form-control datepicker" value="{{isset($filter["from"]) ? $filter["from"] : ""}}">	
+				</div>
+				<div class="col-md-2">
+					TO <br/>
+					<input type="text" name="to" class="form-control datepicker" value="{{isset($filter["to"]) ? $filter["to"] : ""}}">	
+				</div>
+				<div class="col-md-2">
+					<br/>
+					<input type="submit" value="find" class="btn btn-primary">
+				</div>
+			</form>
+			<div class="col-md-6">
+				<br/>
+				<a href="/report/pdf?{{$parameter}}" class="btn btn-primary" style="float: right;">Export to PDF</a>
 			</div>
 		</div>
+		<br/>
 		<div class="row">	
 			<div class="col-md-12">
-				<table class="table">
-					<?php 
-						$str_parameter = "";
-						if (isset($order_by)){
-							if ($order_by=="asc"){
-								$str_parameter = "&order_by=desc";
-							}
-							else if ($order_by=="desc"){
-								$str_parameter = "&order_by=asc";
-							}	
-						}
-					?>
+				<table class="table">					
 					<thead>
 						<th>No</th>
 						<th>Name</th>			    				
@@ -66,9 +71,13 @@
 								<td>{{$key+1}}</td>
 								<td>{{$value->name}}</td>
 								<td>{{$value->room}}</td>								
-								<td>{{$value->action}}</td>															
-								<td>{{$value->username}}</td>	
-								<td>{{$value->created_at}}</td>
+								<td>{{$value->action}}</td>	
+								@if ($value->user_id==-1)
+									<td>System</td>	
+								@else
+									<td>{{$value->username}}</td>	
+								@endif								
+								<td>{{$value->date}}</td>
 							</tr>																							
 						@endforeach
 					</tbody>

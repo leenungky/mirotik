@@ -48,10 +48,14 @@ class CustomerController extends Controller {
 		$room_in_use = json_decode(json_encode($room_in_use), True);						
 		
 		$room = DB::table("room")->select("name")->whereNotIn("name", $room_in_use);
+
 		if ($this->data["role"]==config("config.front_office")){
 			$room = $room->where("ishidden",0);
 		}
 		$room = $room->get();
+		// echo "<pre>";		
+		// print_r($room_in_use);
+		// die();
 		$meetroom = DB::table("meetroom")->select("name")->whereNotIn("name", $room_in_use)->get();
 		
 		$this->data["room"] = $room;
@@ -69,8 +73,8 @@ class CustomerController extends Controller {
 
 	public function getAddstaff(){									
 		if ($this->data["role"]!=config("config.supervisor")){
-			return redirect('/customer/list');
-		}
+			return redirect('/customer/list')
+;		}
 		return view('foffice.staff', $this->data);
 	}
 

@@ -48,18 +48,21 @@ class Removed extends Command
         $connect = array("host" => "202.169.46.205", "user" => "nungky", "password" => "cabin888");
         if ($api->connect($connect["host"], 
                 $connect["user"], 
-                $connect["password"])) {
-        
+                $connect["password"])) {        
             $mikrotiks = DB::table("mikrotik")->where("checkout", "=", date("Y-m-d"))->get();
             foreach ($mikrotiks as $key => $value) {
-                $arrUpdate = array("deleted_at" => date("Y-m-d h:i:s"), "deleted_by"=>-1);
-                DB::table("mikrotik")->where("id", $value->id)->update($arrUpdate);            
+                $report =  array( "room" =>$value->room, "name"=>$value->room, "user_id"=>-1, "action" => "delete", "created_at" => date("Y-m-d h:i:s")) ;
+                DB::table("report")->insert($report);
+                DB::table("mikrotik")->where("id", $value->id)->delete();
                 $remove=$api->comm($path."/user/remove",Array(              
                   ".id" => $value->mikrotik_id,
                 ));         
             }           
+            DB::table("mikrotik")->where("checkout", "<=", "'".date("Y-m-d")."'")->delete();            
             
             $api->disconnect();             
         }
-    }    
+    }   
+
+
 }
