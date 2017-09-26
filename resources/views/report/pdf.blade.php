@@ -60,7 +60,7 @@
 								<td>{{$value->room}}</td>								
 								<td>{{$value->action}}</td>															
 								<td>{{$value->username}}</td>	
-								<td>{{$value->created_at}}</td>
+								<td>{{date('Y-m-d H:i A', strtotime($value->created_at))}}</td>
 							</tr>																							
 						@endforeach
 					</tbody>

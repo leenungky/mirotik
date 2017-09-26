@@ -77,7 +77,7 @@
 								@else
 									<td>{{$value->username}}</td>	
 								@endif								
-								<td>{{$value->date}}</td>
+								<td>{{ date('Y-m-d H:i A', strtotime($value->date))}}</td>
 							</tr>																							
 						@endforeach
 					</tbody>
@@ -86,11 +86,15 @@
 		</div>
 		 <div class="row">
             <div class="col-md-12">   
-            <?php 
-                if (isset($input)){
-                    $report->appends($input);
-                }
-            ?>
+            
+                <?php 					
+					if (isset($filter["from"])){
+						$report->appends(['from' => $filter["from"]]);		
+					}
+					if (isset($filter["to"])){
+						$report->appends(['to' => $filter["to"]]);		
+					}
+				?>			            
             {!! $report->render() !!}
             </div>
 	 </div>	    	

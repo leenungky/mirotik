@@ -78,16 +78,14 @@
 											<span class="edit"> 
 						    					<span class="glyphicon glyphicon-pencil"></span>
 						    				</span>
-					    				</a> 
-					    				@if ($role==config("config.supervisor"))
+					    				</a>
 					    				| 
 					    				<a href="/customer/delete/{{$value["id"]}}" class="confirmation">
 						    				<span class="delete">
 					    						<span class="glyphicon glyphicon-remove"></span>
 					    					</span> 
-				    					</a>
-				    					 			    					
-			    						@endif
+				    					</a>				    					 			    					
+			    						
 			    					| <a href="javascript:void(0)" class="print" val="{{$value["id"]}}" val-name="{{$value["room"]}}" val-password="{{$value["password"]}}" val-room="{{$value["room"]}}">
 			    						 <span class="glyphicon glyphicon-print"></span> 
 			    					</a>

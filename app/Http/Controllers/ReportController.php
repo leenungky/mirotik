@@ -27,6 +27,11 @@ class ReportController extends Controller {
     }
 
 	public function getList(){  
+        // $date =  date("Y-m-d h:i:s");
+        // $output = date('Y-m-d H:i A', strtotime($date));
+        // echo $output;
+        
+        // die();
         if ($this->data["role"]!=config("config.supervisor")){
             return redirect('/customer/list');
         }
@@ -41,7 +46,7 @@ class ReportController extends Controller {
             $this->data["filter"]["to"] = date("Y-m-d");    
         }
         
-        $this->data["report"] = $data->paginate(20);
+        $this->data["report"] = $data->paginate(5);
         return view('report.index', $this->data);
     }
 
